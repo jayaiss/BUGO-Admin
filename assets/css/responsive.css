@@ -1,0 +1,842 @@
+/**
+ * BUGO Admin - Global Responsive Layer
+ * Mobile-first responsive enhancements for all pages
+ * Import this AFTER all existing CSS files
+ * Timezone: Asia/Manila
+ */
+
+/* ========================================
+   BASE RESPONSIVE RESETS
+   ======================================== */
+
+/* Ensure proper box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll */
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  font-size: var(--fs-base, 1rem);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   TYPOGRAPHY - Fluid & Responsive
+   ======================================== */
+
+/* Apply fluid typography using tokens */
+h1, .h1 { font-size: var(--fs-900) !important; }
+h2, .h2 { font-size: var(--fs-800) !important; }
+h3, .h3 { font-size: var(--fs-700) !important; }
+h4, .h4 { font-size: var(--fs-600) !important; }
+h5, .h5 { font-size: var(--fs-500) !important; }
+h6, .h6 { font-size: var(--fs-400) !important; }
+
+body, p, .text-base {
+  font-size: var(--fs-200) !important;
+}
+
+small, .small, .text-sm {
+  font-size: var(--fs-100) !important;
+}
+
+.lead {
+  font-size: var(--fs-300) !important;
+}
+
+/* Ensure text wraps properly */
+h1, h2, h3, h4, h5, h6, p, li, td, th, span, a, label {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Prevent long URLs/emails from breaking layout */
+a[href^="http"],
+a[href^="mailto"] {
+  word-break: break-all;
+}
+
+/* ========================================
+   CONTAINER & LAYOUT IMPROVEMENTS
+   ======================================== */
+
+/* Add safe padding to containers on mobile */
+.container,
+.container-fluid {
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+@media (max-width: 575.98px) {
+  .container,
+  .container-fluid {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+}
+
+/* Ensure main content area is responsive */
+#layoutSidenav_content {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* ========================================
+   IMAGES & MEDIA - Responsive by default
+   ======================================== */
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Maintain aspect ratio for images */
+img {
+  object-fit: cover;
+}
+
+/* Profile pictures and avatars */
+img.rounded-circle,
+.profile-picture,
+.avatar {
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+/* Video embeds */
+.video-container,
+.embed-responsive {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.video-container iframe,
+.embed-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ========================================
+   TABLES - Responsive Enhancements
+   ======================================== */
+
+/* Wrap all tables in responsive container */
+table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: var(--space-5);
+  background-color: transparent;
+  border-collapse: collapse;
+}
+
+/* Add responsive wrapper if not present */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure table cells don't have fixed widths on mobile */
+@media (max-width: 767.98px) {
+  table th,
+  table td {
+    min-width: 100px;
+    white-space: nowrap;
+  }
+
+  /* Allow specific columns to wrap */
+  table th.wrap,
+  table td.wrap {
+    white-space: normal;
+    min-width: 120px;
+  }
+}
+
+/* Stacked table layout for very small screens */
+@media (max-width: 575.98px) {
+  .table-stacked {
+    display: block;
+  }
+
+  .table-stacked thead {
+    display: none;
+  }
+
+  .table-stacked tbody,
+  .table-stacked tr,
+  .table-stacked td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-stacked tr {
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .table-stacked td {
+    text-align: right;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-color-light);
+  }
+
+  .table-stacked td:last-child {
+    border-bottom: 0;
+  }
+
+  .table-stacked td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    text-align: left;
+  }
+}
+
+/* ========================================
+   CARDS - Responsive Spacing
+   ======================================== */
+
+.card {
+  margin-bottom: var(--space-5);
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+}
+
+.card-body {
+  padding: var(--card-padding);
+}
+
+@media (max-width: 767.98px) {
+  .card-body {
+    padding: var(--card-padding-sm);
+  }
+}
+
+/* Card grid - responsive columns */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 575.98px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* Dashboard stat cards */
+.stat-card,
+.card.text-center {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ========================================
+   MODALS - Responsive Improvements
+   ======================================== */
+
+/* Ensure modals are scrollable on small screens */
+.modal-dialog {
+  max-width: 90%;
+  margin: var(--space-5) auto;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 768px) {
+  .modal-dialog-lg {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-dialog-xl {
+    max-width: 1140px;
+  }
+}
+
+/* Full-screen modals on small devices */
+@media (max-width: 575.98px) {
+  .modal-fullscreen-sm-down {
+    width: 100vw;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+  }
+
+  .modal-fullscreen-sm-down .modal-content {
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .modal-fullscreen-sm-down .modal-body {
+    overflow-y: auto;
+  }
+}
+
+/* Scrollable modal body */
+.modal-dialog-scrollable .modal-body {
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+/* Modal padding adjustments */
+.modal-header,
+.modal-footer {
+  padding: var(--modal-header-padding);
+}
+
+.modal-body {
+  padding: var(--modal-padding);
+}
+
+@media (max-width: 575.98px) {
+  .modal-header,
+  .modal-footer,
+  .modal-body {
+    padding: var(--space-4);
+  }
+}
+
+/* Fix modal backdrop padding issue */
+body.modal-open {
+  padding-right: 0 !important;
+}
+
+/* ========================================
+   FORMS - Responsive & Accessible
+   ======================================== */
+
+/* Ensure form controls have minimum touch target */
+.form-control,
+.form-select,
+.btn,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+  min-height: var(--touch-target-min);
+  font-size: var(--fs-200);
+  padding: var(--input-padding-y) var(--input-padding-x);
+}
+
+/* Stack form groups on mobile */
+@media (max-width: 767.98px) {
+  .row.g-2 > [class*="col-"] {
+    margin-bottom: var(--space-4);
+  }
+
+  .form-inline,
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group > * {
+    width: 100% !important;
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* Labels should not cause overflow */
+label,
+.form-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-200);
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+/* ========================================
+   BUTTONS - Accessible Touch Targets
+   ======================================== */
+
+.btn {
+  min-height: var(--btn-min-height);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  font-size: var(--btn-font-size);
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+/* Button groups stack on mobile */
+@media (max-width: 575.98px) {
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group > .btn {
+    width: 100%;
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* Icon buttons maintain square aspect */
+.btn-icon {
+  aspect-ratio: 1 / 1;
+  padding: var(--space-3);
+}
+
+/* ========================================
+   NAVIGATION - Responsive Sidebar
+   ======================================== */
+
+/* Sidebar responsive behavior */
+#layoutSidenav {
+  display: flex;
+  flex-direction: row;
+}
+
+#layoutSidenav_nav {
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  transition: transform var(--transition-base);
+}
+
+@media (max-width: 991.98px) {
+  #layoutSidenav_nav {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    bottom: 0;
+    z-index: var(--z-fixed);
+    transform: translateX(-100%);
+    background-color: var(--color-dark);
+    overflow-y: auto;
+  }
+
+  #layoutSidenav_nav.show {
+    transform: translateX(0);
+  }
+
+  /* Overlay when sidebar is open */
+  body.sidebar-open::before {
+    content: '';
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-overlay);
+    z-index: calc(var(--z-fixed) - 1);
+  }
+}
+
+/* Sidebar toggle button - always visible on mobile */
+#sidebarToggle {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+/* Sidebar navigation links */
+.sb-sidenav .nav-link {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--fs-200);
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+}
+
+/* ========================================
+   NAVBAR - Responsive Top Bar
+   ======================================== */
+
+.sb-topnav {
+  height: var(--navbar-height);
+  padding: 0 var(--space-4);
+}
+
+.navbar-brand {
+  font-size: var(--fs-400);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    font-size: var(--fs-300);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .navbar-brand img {
+    max-width: 32px;
+    height: auto;
+  }
+}
+
+/* Navbar dropdown */
+.navbar-nav .dropdown-menu {
+  position: absolute;
+  right: 0;
+  left: auto;
+  min-width: 200px;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-nav .dropdown-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    right: var(--space-3);
+    left: var(--space-3);
+    width: auto;
+  }
+}
+
+/* ========================================
+   DATATABLES - Responsive Configuration
+   ======================================== */
+
+/* DataTables wrapper */
+.datatable-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.datatable-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.datatable-table {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* DataTables controls */
+.datatable-top,
+.datatable-bottom {
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+@media (max-width: 767.98px) {
+  .datatable-top,
+  .datatable-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .datatable-dropdown,
+  .datatable-search,
+  .datatable-info,
+  .datatable-pagination {
+    width: 100%;
+  }
+}
+
+/* DataTables pagination */
+.datatable-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.datatable-pagination a {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   SWEETALERT - Responsive Modals
+   ======================================== */
+
+.swal2-popup {
+  font-size: var(--fs-200) !important;
+  padding: var(--space-6) !important;
+}
+
+.swal2-title {
+  font-size: var(--fs-600) !important;
+  word-wrap: break-word;
+}
+
+.swal2-html-container {
+  font-size: var(--fs-200) !important;
+  word-wrap: break-word;
+}
+
+@media (max-width: 575.98px) {
+  .swal2-popup {
+    width: calc(100% - var(--space-6)) !important;
+    padding: var(--space-5) !important;
+  }
+
+  .swal2-title {
+    font-size: var(--fs-500) !important;
+  }
+}
+
+/* ========================================
+   BADGES & STATUS INDICATORS
+   ======================================== */
+
+.badge {
+  font-size: var(--fs-100);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+}
+
+@media (max-width: 575.98px) {
+  .badge {
+    font-size: 0.7rem;
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
+/* ========================================
+   FILTERS & SIDE PANELS
+   ======================================== */
+
+/* Filter panel - convert to offcanvas on mobile */
+.filter-panel {
+  background-color: var(--bg-surface);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+}
+
+@media (max-width: 991.98px) {
+  .filter-panel {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 80vw;
+    z-index: var(--z-fixed);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .filter-panel.show {
+    transform: translateX(0);
+  }
+
+  /* Filter toggle button */
+  .filter-toggle {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-5);
+    z-index: calc(var(--z-fixed) + 1);
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY - Focus Styles
+   ======================================== */
+
+/* Visible focus indicators */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  padding: var(--space-4) var(--space-5);
+  z-index: var(--z-tooltip);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  /* Hide non-essential elements */
+  .sb-topnav,
+  .sb-sidenav,
+  .btn,
+  .filter-panel,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Expand content to full width */
+  #layoutSidenav_content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Ensure tables fit on page */
+  table {
+    font-size: 10pt;
+  }
+
+  /* Page breaks */
+  .card,
+  .table-responsive {
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Responsive display utilities */
+.d-mobile-none {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .d-mobile-none {
+    display: block !important;
+  }
+}
+
+.d-desktop-none {
+  display: block !important;
+}
+
+@media (min-width: 768px) {
+  .d-desktop-none {
+    display: none !important;
+  }
+}
+
+/* Text truncation */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Aspect ratio utilities */
+.aspect-ratio-16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-ratio-1-1 {
+  aspect-ratio: 1 / 1;
+}
+
+/* Safe area padding for notched devices */
+.safe-area-inset {
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* GPU acceleration for animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Smooth scrolling containers */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}

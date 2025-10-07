@@ -692,17 +692,17 @@ $stmt->close();
 
 <div class="card shadow-sm">
   <div class="card-body table-shell">
-    <div class="table-edge">               <!-- keeps rounded corners -->
-      <div class="table-scroll">           <!-- becomes the scroller -->
+<div class="table-edge">               <!-- keeps rounded corners -->
+      <div class="table-scroll table-responsive">           <!-- becomes the scroller -->
         <table class="table table-hover align-middle mb-0" id="appointmentsTable">
           <thead class="table-head sticky-top">
             <tr>
-              <th style="width: 200px;">Full Name</th>
+              <th >Full Name</th>
               <th style="width: 100px;">Certificate</th>
-              <th style="width: 200px;">Tracking Number</th>
-              <th style="width: 200px;">Date</th>
-              <th style="width: 200px;">Time Slot</th>
-              <th style="width: 200px;">Status</th>
+              <th >Tracking Number</th>
+              <th >Date</th>
+              <th >Time Slot</th>
+              <th >Status</th>
               <th class="text-end">Actions</th>
             </tr>
           </thead>
