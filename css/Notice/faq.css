@@ -1,0 +1,60 @@
+/* css/Notice/faq.css (append or replace) */
+:root{
+  --bg:#F2F2F2;
+  --card:#ffffff;              /* white card like Appointment */
+  --accent:#EAE4D5;            /* beige band */
+  --text:#000000;
+  --ring:rgba(0,0,0,.12);
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --radius:12px;
+}
+
+body{ background:var(--bg); color:var(--text); }
+h4{ font-weight:800; color:var(--text); }
+
+.d-flex.align-items-center.justify-content-between.mb-3 .btn.btn-primary{
+  background:#0d6efd; border:none; border-radius:8px; font-weight:600; padding:.45rem 1rem;
+}
+
+.card.faq-card{ border:1px solid var(--ring); border-radius:var(--radius); background:var(--card); box-shadow:var(--shadow); overflow:hidden; }
+
+/* Beige header band like Appointment List */
+.table-band{ background:var(--accent); border-bottom:1px solid var(--ring); }
+
+.card-body{ padding:0; }
+.table-responsive{ max-height:70vh; }
+
+.table{ margin:0; }
+.table thead{ background:var(--accent); }
+.table thead th{ font-weight:700; border-bottom:1px solid var(--ring); }
+.table td, .table th{ border-color:var(--ring)!important; vertical-align:middle; }
+.table-hover tbody tr:hover{ background:#f9f9f9; }
+
+/* Badges */
+.badge.bg-success{ background:#28a745!important; }
+.badge.bg-secondary{ background:#6c757d!important; }
+
+/* Empty state */
+.empty-state{ display:flex; align-items:center; gap:.6rem; padding:.75rem 1rem; color:#6b6b6b; }
+.empty-icon{ font-size:1.1rem; opacity:.7; }
+.empty-text{ font-weight:600; }
+
+/* Modal */
+.modal-content{ background:#fff; border-radius:var(--radius); border:1px solid var(--ring); box-shadow:var(--shadow); }
+.modal-header, .modal-footer{ border-color:var(--ring); }
+.btn.btn-light{ background:#e9ecef; border:none; color:var(--text); border-radius:8px; }
+.btn.btn-primary{ background:#0d6efd!important; border:none!important; color:#fff!important; border-radius:8px; }
+.btn.btn-primary:hover{ filter:brightness(.95); }
+
+/* Fields */
+.form-control, .form-select, textarea{ border-radius:8px; border:1px solid var(--ring); box-shadow:none; }
+.form-control:focus, .form-select:focus, textarea:focus{
+  border-color:#0d6efd; box-shadow:0 0 0 .15rem rgba(13,110,253,.25);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  h4{ font-size:1.1rem; }
+  .table-responsive{ max-height:60vh; }
+  .table td, .table th{ padding:.6rem .75rem; }
+}

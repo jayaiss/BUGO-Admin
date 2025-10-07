@@ -1,0 +1,72 @@
+[2025-08-29 15:46:28] === Import start === employee_id=98, tmp=/tmp/phpWRVz7s, logFile=/home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Modules/lupon_modules/logs/case_import.log
+[2025-08-29 15:46:28] Headers normalized: {"date_filed":"A","time_filed":"B","case#":"C","complainants":"D","respondents":"E","nature_of_offense":"F","schedule_of_hearing":"G","action_taken":"H"}
+[2025-08-29 15:46:28] highestDataRow=11
+[2025-08-29 15:46:28] Row 2 raw: case=1001, compl='Juan Dela Cruz', resp='Jose Dela Cruz', nature='Noise Complaint', dateCell="2025-08-01", parsedDate=2025-08-01, timeCell="09:00", parsedTime=09:00:00, hearingCell="2025-08-15", parsedHearing=2025-08-15, action='Ongoing'
+[2025-08-29 15:46:28] Row 2 inserted OK (case 1001)
+[2025-08-29 15:46:28] Row 3 raw: case=1002, compl='Maria Santos', resp='Mario Santos', nature='Trespassing', dateCell="2025-08-02", parsedDate=2025-08-02, timeCell="10:30", parsedTime=10:30:00, hearingCell="2025-08-16", parsedHearing=2025-08-16, action='Conciliated'
+[2025-08-29 15:46:28] Row 3 inserted OK (case 1002)
+[2025-08-29 15:46:28] Row 4 raw: case=1003, compl='Pedro Reyes', resp='Paolo Reyes', nature='Vandalism', dateCell="2025-08-03", parsedDate=2025-08-03, timeCell="14:15", parsedTime=14:15:00, hearingCell="2025-08-17", parsedHearing=2025-08-17, action='Mediated'
+[2025-08-29 15:46:28] Row 4 inserted OK (case 1003)
+[2025-08-29 15:46:28] Row 5 raw: case=1004, compl='Josefina dela Rosa', resp='Ricardo dela Rosa', nature='Physical Assault', dateCell="2025-08-04", parsedDate=2025-08-04, timeCell="08:45", parsedTime=08:45:00, hearingCell="2025-08-18", parsedHearing=2025-08-18, action='Withdrawn'
+[2025-08-29 15:46:28] Row 5 inserted OK (case 1004)
+[2025-08-29 15:46:28] Row 6 raw: case=1005, compl='Carlos Garcia', resp='Carmela Garcia', nature='Theft', dateCell="2025-08-05", parsedDate=2025-08-05, timeCell="13:00", parsedTime=13:00:00, hearingCell="2025-08-19", parsedHearing=2025-08-19, action='Dismissed'
+[2025-08-29 15:46:28] Row 6 inserted OK (case 1005)
+[2025-08-29 15:46:28] Row 7 raw: case=1006, compl='Ana Lopez', resp='Andres Lopez', nature='Public Disturbance', dateCell="2025-08-06", parsedDate=2025-08-06, timeCell="11:20", parsedTime=11:20:00, hearingCell="2025-08-20", parsedHearing=2025-08-20, action='Ongoing'
+[2025-08-29 15:46:28] Row 7 inserted OK (case 1006)
+[2025-08-29 15:46:28] Row 8 raw: case=1007, compl='Mark Villanueva', resp='Martin Villanueva', nature='Fraud', dateCell="2025-08-07", parsedDate=2025-08-07, timeCell="15:10", parsedTime=15:10:00, hearingCell="2025-08-21", parsedHearing=2025-08-21, action='Arbitration'
+[2025-08-29 15:46:28] Row 8 inserted OK (case 1007)
+[2025-08-29 15:46:28] Row 9 raw: case=1008, compl='Jorge Fernandez', resp='Javier Fernandez', nature='Harassment', dateCell="2025-08-08", parsedDate=2025-08-08, timeCell="16:00", parsedTime=16:00:00, hearingCell="2025-08-22", parsedHearing=2025-08-22, action='Ongoing'
+[2025-08-29 15:46:28] Row 9 inserted OK (case 1008)
+[2025-08-29 15:46:28] Row 10 raw: case=1009, compl='Isabel Ramirez', resp='Ignacio Ramirez', nature='Property Damage', dateCell="2025-08-09", parsedDate=2025-08-09, timeCell="09:30", parsedTime=09:30:00, hearingCell="2025-08-23", parsedHearing=2025-08-23, action='Conciliated'
+[2025-08-29 15:46:28] Row 10 inserted OK (case 1009)
+[2025-08-29 15:46:28] Row 11 raw: case=1010, compl='Miguel Aquino', resp='Marco Aquino', nature='Curfew Violation', dateCell="2025-08-10", parsedDate=2025-08-10, timeCell="10:15", parsedTime=10:15:00, hearingCell="2025-08-24", parsedHearing=2025-08-24, action='Ongoing'
+[2025-08-29 15:46:28] Row 11 inserted OK (case 1010)
+[2025-08-29 15:46:28] === Import end === imported=10, skipped=0
+[2025-09-03 16:36:42] === Import start === employee_id=95, tmp=/tmp/php5sJcOQ, logFile=/home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Modules/lupon_modules/logs/case_import.log
+[2025-09-03 16:36:42] Headers normalized: {"date_filed":"A","time_filed":"B","case#":"C","complainants":"D","respondents":"E","nature_of_offense":"F","schedule_of_hearing":"G","action_taken":"H"}
+[2025-09-03 16:36:42] highestDataRow=11
+[2025-09-03 16:36:42] Row 2 raw: case=1001, compl='Juan Dela Cruz', resp='Jose Dela Cruz', nature='Noise Complaint', dateCell="2025-08-01", parsedDate=2025-08-01, timeCell="09:00", parsedTime=09:00:00, hearingCell="2025-08-15", parsedHearing=2025-08-15, action='Ongoing'
+[2025-09-03 16:36:42] Row 2 inserted OK (case 1001)
+[2025-09-03 16:36:42] Row 3 raw: case=1002, compl='Maria Santos', resp='Mario Santos', nature='Trespassing', dateCell="2025-08-02", parsedDate=2025-08-02, timeCell="10:30", parsedTime=10:30:00, hearingCell="2025-08-16", parsedHearing=2025-08-16, action='Conciliated'
+[2025-09-03 16:36:42] Row 3 inserted OK (case 1002)
+[2025-09-03 16:36:42] Row 4 raw: case=1003, compl='Pedro Reyes', resp='Paolo Reyes', nature='Vandalism', dateCell="2025-08-03", parsedDate=2025-08-03, timeCell="14:15", parsedTime=14:15:00, hearingCell="2025-08-17", parsedHearing=2025-08-17, action='Mediated'
+[2025-09-03 16:36:42] Row 4 inserted OK (case 1003)
+[2025-09-03 16:36:42] Row 5 raw: case=1004, compl='Josefina dela Rosa', resp='Ricardo dela Rosa', nature='Physical Assault', dateCell="2025-08-04", parsedDate=2025-08-04, timeCell="08:45", parsedTime=08:45:00, hearingCell="2025-08-18", parsedHearing=2025-08-18, action='Withdrawn'
+[2025-09-03 16:36:42] Row 5 inserted OK (case 1004)
+[2025-09-03 16:36:42] Row 6 raw: case=1005, compl='Carlos Garcia', resp='Carmela Garcia', nature='Theft', dateCell="2025-08-05", parsedDate=2025-08-05, timeCell="13:00", parsedTime=13:00:00, hearingCell="2025-08-19", parsedHearing=2025-08-19, action='Dismissed'
+[2025-09-03 16:36:42] Row 6 inserted OK (case 1005)
+[2025-09-03 16:36:42] Row 7 raw: case=1006, compl='Ana Lopez', resp='Andres Lopez', nature='Public Disturbance', dateCell="2025-08-06", parsedDate=2025-08-06, timeCell="11:20", parsedTime=11:20:00, hearingCell="2025-08-20", parsedHearing=2025-08-20, action='Ongoing'
+[2025-09-03 16:36:42] Row 7 inserted OK (case 1006)
+[2025-09-03 16:36:42] Row 8 raw: case=1007, compl='Mark Villanueva', resp='Martin Villanueva', nature='Fraud', dateCell="2025-08-07", parsedDate=2025-08-07, timeCell="15:10", parsedTime=15:10:00, hearingCell="2025-08-21", parsedHearing=2025-08-21, action='Arbitration'
+[2025-09-03 16:36:42] Row 8 inserted OK (case 1007)
+[2025-09-03 16:36:42] Row 9 raw: case=1008, compl='Jorge Fernandez', resp='Javier Fernandez', nature='Harassment', dateCell="2025-08-08", parsedDate=2025-08-08, timeCell="16:00", parsedTime=16:00:00, hearingCell="2025-08-22", parsedHearing=2025-08-22, action='Ongoing'
+[2025-09-03 16:36:42] Row 9 inserted OK (case 1008)
+[2025-09-03 16:36:42] Row 10 raw: case=1009, compl='Isabel Ramirez', resp='Ignacio Ramirez', nature='Property Damage', dateCell="2025-08-09", parsedDate=2025-08-09, timeCell="09:30", parsedTime=09:30:00, hearingCell="2025-08-23", parsedHearing=2025-08-23, action='Conciliated'
+[2025-09-03 16:36:42] Row 10 inserted OK (case 1009)
+[2025-09-03 16:36:42] Row 11 raw: case=1010, compl='Miguel Aquino', resp='Marco Aquino', nature='Curfew Violation', dateCell="2025-08-10", parsedDate=2025-08-10, timeCell="10:15", parsedTime=10:15:00, hearingCell="2025-08-24", parsedHearing=2025-08-24, action='Ongoing'
+[2025-09-03 16:36:42] Row 11 inserted OK (case 1010)
+[2025-09-03 16:36:42] === Import end === imported=10, skipped=0
+[2025-09-04 03:30:47] === Import start === employee_id=95, tmp=/tmp/php5uuBzh, logFile=/home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Modules/lupon_modules/logs/case_import.log
+[2025-09-04 03:30:47] Headers normalized: {"date_filed":"A","time_filed":"B","case#":"C","complainants":"D","respondents":"E","nature_of_offense":"F","schedule_of_hearing":"G","action_taken":"H"}
+[2025-09-04 03:30:47] highestDataRow=11
+[2025-09-04 03:30:47] Row 2 raw: case=1001, compl='Juan Dela Cruz', resp='Jose Dela Cruz', nature='Noise Complaint', dateCell="2025-08-01", parsedDate=2025-08-01, timeCell="09:00", parsedTime=09:00:00, hearingCell="2025-08-15", parsedHearing=2025-08-15, action='Ongoing'
+[2025-09-04 03:30:47] Row 2 inserted OK (case 1001)
+[2025-09-04 03:30:47] Row 3 raw: case=1002, compl='Maria Santos', resp='Mario Santos', nature='Trespassing', dateCell="2025-08-02", parsedDate=2025-08-02, timeCell="10:30", parsedTime=10:30:00, hearingCell="2025-08-16", parsedHearing=2025-08-16, action='Conciliated'
+[2025-09-04 03:30:47] Row 3 inserted OK (case 1002)
+[2025-09-04 03:30:47] Row 4 raw: case=1003, compl='Pedro Reyes', resp='Paolo Reyes', nature='Vandalism', dateCell="2025-08-03", parsedDate=2025-08-03, timeCell="14:15", parsedTime=14:15:00, hearingCell="2025-08-17", parsedHearing=2025-08-17, action='Mediated'
+[2025-09-04 03:30:47] Row 4 inserted OK (case 1003)
+[2025-09-04 03:30:47] Row 5 raw: case=1004, compl='Josefina dela Rosa', resp='Ricardo dela Rosa', nature='Physical Assault', dateCell="2025-08-04", parsedDate=2025-08-04, timeCell="08:45", parsedTime=08:45:00, hearingCell="2025-08-18", parsedHearing=2025-08-18, action='Withdrawn'
+[2025-09-04 03:30:47] Row 5 inserted OK (case 1004)
+[2025-09-04 03:30:47] Row 6 raw: case=1005, compl='Carlos Garcia', resp='Carmela Garcia', nature='Theft', dateCell="2025-08-05", parsedDate=2025-08-05, timeCell="13:00", parsedTime=13:00:00, hearingCell="2025-08-19", parsedHearing=2025-08-19, action='Dismissed'
+[2025-09-04 03:30:47] Row 6 inserted OK (case 1005)
+[2025-09-04 03:30:47] Row 7 raw: case=1006, compl='Ana Lopez', resp='Andres Lopez', nature='Public Disturbance', dateCell="2025-08-06", parsedDate=2025-08-06, timeCell="11:20", parsedTime=11:20:00, hearingCell="2025-08-20", parsedHearing=2025-08-20, action='Ongoing'
+[2025-09-04 03:30:47] Row 7 inserted OK (case 1006)
+[2025-09-04 03:30:47] Row 8 raw: case=1007, compl='Mark Villanueva', resp='Martin Villanueva', nature='Fraud', dateCell="2025-08-07", parsedDate=2025-08-07, timeCell="15:10", parsedTime=15:10:00, hearingCell="2025-08-21", parsedHearing=2025-08-21, action='Arbitration'
+[2025-09-04 03:30:47] Row 8 inserted OK (case 1007)
+[2025-09-04 03:30:47] Row 9 raw: case=1008, compl='Jorge Fernandez', resp='Javier Fernandez', nature='Harassment', dateCell="2025-08-08", parsedDate=2025-08-08, timeCell="16:00", parsedTime=16:00:00, hearingCell="2025-08-22", parsedHearing=2025-08-22, action='Ongoing'
+[2025-09-04 03:30:47] Row 9 inserted OK (case 1008)
+[2025-09-04 03:30:47] Row 10 raw: case=1009, compl='Isabel Ramirez', resp='Ignacio Ramirez', nature='Property Damage', dateCell="2025-08-09", parsedDate=2025-08-09, timeCell="09:30", parsedTime=09:30:00, hearingCell="2025-08-23", parsedHearing=2025-08-23, action='Conciliated'
+[2025-09-04 03:30:47] Row 10 inserted OK (case 1009)
+[2025-09-04 03:30:47] Row 11 raw: case=1010, compl='Miguel Aquino', resp='Marco Aquino', nature='Curfew Violation', dateCell="2025-08-10", parsedDate=2025-08-10, timeCell="10:15", parsedTime=10:15:00, hearingCell="2025-08-24", parsedHearing=2025-08-24, action='Ongoing'
+[2025-09-04 03:30:47] Row 11 inserted OK (case 1010)
+[2025-09-04 03:30:47] === Import end === imported=10, skipped=0

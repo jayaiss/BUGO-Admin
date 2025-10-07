@@ -1,0 +1,149 @@
+/* =======================================================
+   css/report/report.css
+   Residents Report – polished, accessible, mobile-friendly
+   Palette (as requested)
+======================================================= */
+:root{
+  --bg:#F2F2F2;
+  --card:#ffffff;
+  --accent:#EAE4D5;
+  --text:#000000;
+  --muted: rgba(0,0,0,.55);
+  --ring: rgba(0,0,0,.10);
+  --shadow: 0 10px 28px rgba(0,0,0,.08);
+  --radius: 16px;
+}
+
+/* Base */
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01" on,"liga" on;
+}
+.container,
+.app-shell,
+.res-report{max-width:1200px;margin-inline:auto}
+
+/* =============== Toolbar (filters + actions) =============== */
+.report-toolbar{
+  display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;margin:0 0 1rem 0
+}
+.report-toolbar .filters{
+  display:flex;flex-wrap:wrap;gap:.5rem;align-items:center
+}
+.report-toolbar .filters .form-select,
+.report-toolbar .filters .form-control{
+  min-width:180px;border-radius:.75rem;border:1px solid var(--ring);
+  background: #fff
+}
+.report-toolbar .filters .form-select:focus,
+.report-toolbar .filters .form-control:focus{
+  outline:0;box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, #bbb)
+}
+.report-toolbar .actions{display:flex;gap:.5rem}
+.report-toolbar .btn{
+  border-radius:.75rem;border:1px solid var(--ring);
+  background:var(--card); box-shadow:var(--shadow); font-weight:600
+}
+.report-toolbar .btn-primary{
+  background: color-mix(in srgb, var(--accent) 30%, white);
+  border-color: color-mix(in srgb, var(--accent) 40%, #DDD);
+  color:#111
+}
+.report-toolbar .btn-primary:hover{filter:brightness(.97)}
+.report-toolbar .btn-outline{
+  background:#fff
+}
+
+/* =============== KPI / Analytics Cards =============== */
+.res-report .analytics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem
+}
+.res-report .card-analytic{
+  background:var(--card);border:1px solid var(--ring);border-radius:var(--radius);
+  padding:1rem;box-shadow:var(--shadow)
+}
+.res-report .card-analytic h6{
+  margin:0 0 .35rem 0;font-size:.85rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px
+}
+.res-report .card-analytic p{
+  margin:0;font-size:1.65rem;font-weight:800;color:#0d6efd
+}
+
+/* =============== Sections (tables, lists) =============== */
+.res-report .section{
+  background:var(--card);border:1px solid var(--ring);border-radius:var(--radius);
+  padding:.85rem;box-shadow:var(--shadow);margin-bottom:1rem
+}
+.res-report .section h6{
+  margin:0 0 .5rem 0;font-weight:800;color:#0d6efd;letter-spacing:.2px
+}
+
+/* Tables */
+.res-report .table-wrap{overflow:auto;border-radius:calc(var(--radius) - 4px)}
+.res-report table{width:100%;border-collapse:separate;border-spacing:0}
+.res-report thead th{
+  position:sticky;top:0;z-index:2;
+  background: color-mix(in srgb, var(--accent) 34%, white);
+  color:#111;border-bottom:1px solid var(--ring);font-weight:800
+}
+.res-report thead th,
+.res-report tbody td{padding:.65rem .75rem}
+.res-report tbody tr{
+  border-bottom:1px solid var(--ring);transition:background .15s ease
+}
+.res-report tbody tr:nth-child(odd){background: color-mix(in srgb, var(--accent) 10%, white)}
+.res-report tbody tr:hover{background: color-mix(in srgb, var(--accent) 16%, white)}
+.res-report td:last-child, .res-report th:last-child{border-right:0}
+.res-report td:first-child, .res-report th:first-child{border-left:0}
+
+/* “No data” helper */
+.res-report .empty{
+  padding:1.25rem;border:1px dashed var(--ring);border-radius:.75rem;text-align:center;color:var(--muted);
+  background: color-mix(in srgb, var(--accent) 14%, white)
+}
+
+/* =============== Pagination (Bootstrap compatible) =============== */
+.pagination{
+  gap:.25rem;margin:0
+}
+.pagination .page-item .page-link{
+  border:1px solid var(--ring);
+  background:#fff;color:#111;font-weight:600;
+  border-radius:.6rem;min-width:40px;text-align:center;box-shadow:var(--shadow)
+}
+.pagination .page-item .page-link:focus{
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 50%, transparent)
+}
+.pagination .page-item.active .page-link{
+  background: color-mix(in srgb, var(--accent) 40%, white);
+  border-color: color-mix(in srgb, var(--accent) 45%, #d0d0d0)
+}
+.pagination .page-item.disabled .page-link{
+  color:var(--muted);background:#fafafa
+}
+.pagination .page-link i{vertical-align:middle}
+
+/* Align pagination to the right when wrapped in a toolbar/footer */
+.report-pagination{
+  display:flex;justify-content:flex-end;margin-top:.5rem
+}
+
+/* =============== Print tweaks =============== */
+@media print{
+  .print-hide, .report-toolbar, .report-pagination{display:none !important}
+  body{background:white}
+  .res-report .section{box-shadow:none;border-color:#cfd8e3}
+  .res-report thead th{background:#e7eef7 !important}
+}
+
+/* =============== Responsive =============== */
+@media (max-width: 768px){
+  .report-toolbar .filters .form-select,
+  .report-toolbar .filters .form-control{min-width:140px}
+  .res-report thead th{font-size:.9rem}
+  .res-report tbody td{font-size:.92rem}
+}

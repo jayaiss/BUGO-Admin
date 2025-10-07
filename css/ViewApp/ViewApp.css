@@ -1,0 +1,180 @@
+/* =========================
+   viewApp.css
+   - Palette + layout polish
+   - Edge-to-edge table
+   - Modal enhancements
+   - MOBILE: card-style table with data-labels
+   ========================= */
+
+:root{
+  --bg:#F2F2F2;
+  --card:#EAE4D5;
+  --accent:#B6B09F;
+  --text:#000000;
+  --muted: rgba(0,0,0,.55);
+  --ring: rgba(0,0,0,.08);
+  --shadow: 0 6px 18px rgba(0,0,0,.08);
+  --radius: 14px;
+}
+
+body{ background:var(--bg); color:var(--text); }
+.app-shell{ max-width:1200px; }
+.page-title{ font-weight:800; letter-spacing:.2px; color:var(--text); }
+
+/* Cards */
+.card{
+  border:1px solid var(--ring);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card-filter .form-label{ color:var(--muted); }
+.card-filter .form-select,
+.card-filter .form-control{ background:#fff; border-radius:10px; }
+.card-filter .btn{ border-radius:10px; }
+
+/* Table (edge-to-edge) */
+.table-wrap{ overflow:auto; border-radius:var(--radius); }
+
+/* Remove colors from table */
+.table { --bs-table-bg: transparent !important; background: transparent !important; }
+.table-head{ background:transparent !important; box-shadow:none !important; }
+.table thead th{
+  font-size:.85rem; text-transform:uppercase; letter-spacing:.04em;
+  color:inherit !important; white-space:nowrap;
+  background:transparent !important;
+}
+.table tbody td{ vertical-align:middle; background:transparent !important; }
+.table-hover tbody tr:hover{ background:transparent !important; }
+
+.card > .table-responsive,
+.card > .table-wrap{
+  margin:0; padding:0 !important;
+  border-radius:var(--radius);
+  overflow:hidden; border:0;
+}
+
+.table-wrap{ position:relative; }
+.table-head.sticky-top{ top:0; z-index:3; }
+#appointmentsTable tbody td,
+#appointmentsTable tbody td *{ pointer-events:auto; }
+#appointmentsTable .btn,
+#appointmentsTable .btn *{ position:relative; z-index:5; pointer-events:auto; }
+
+/* Badges */
+.badge{ font-weight:600; padding:.45em .6em; border-radius:999px; }
+.badge-soft-warning{ background:#FFF3CD; color:#B58100; }
+.badge-soft-info{ background:#D9EDF7; color:#11618a; }
+.badge-soft-primary{ background:#E2E8F0; color:#213547; }
+.badge-soft-danger{ background:#F8D7DA; color:#842029; }
+.badge-soft-success{ background:#D1E7DD; color:#0f5132; }
+.badge-soft-secondary{ background:#EEE; color:#555; }
+
+/* Inputs */
+.input-group-text{ background:#fff; border-right:0; }
+.input-group .form-control{ border-left:0; }
+.form-control:focus,
+.form-select:focus{ box-shadow:0 0 0 .2rem rgba(182,176,159,.25); border-color:var(--accent); }
+
+/* Pagination */
+.pagination .page-link{ border-radius:8px; color:#111; }
+.pagination .page-item.active .page-link{ background:var(--accent); border-color:var(--accent); }
+
+/* Modal enhancements */
+#viewModal .modal-content{ border:0; box-shadow:0 8px 30px rgba(0,0,0,.25); }
+#viewModal .modal-header{ background:var(--accent); color:var(--text); border-bottom:0; }
+#viewModal .btn-close{ filter: invert(1) grayscale(1); }
+#viewModal .modal-title{ font-weight:700; letter-spacing:.3px; }
+#viewModal .table{ border:0; }
+#viewModal .table td{ padding:.5rem .75rem; }
+#viewModal h6{ color:var(--accent); font-weight:700; font-size:.95rem; text-transform:uppercase; letter-spacing:.5px; }
+#viewModal #caseHistoryContainer,
+#viewModal #sameDayAppointments{ border:1px solid var(--ring); border-radius:var(--radius); padding:.75rem; background:#fff; }
+#viewModal #sameDayAppointments .list-group-item{ border:0; padding:.4rem .5rem; }
+#viewModal form .form-select,
+#viewModal form .form-control{ border-radius:10px; }
+#viewModal button#saveStatusBtn{ border-radius:12px; font-weight:600; }
+
+/* Ensure table card has no inner padding, so header touches edges */
+.card-body.table-shell { padding: 0 !important; }
+
+/* Edge-to-edge wrapper */
+.table-edge{ border-radius:var(--radius); overflow:hidden; }
+
+/* Prevent double side borders */
+.table-edge .table{ border-left:0 !important; border-right:0 !important; }
+
+/* Print-friendly */
+@media print{
+  body{ background:#fff; }
+  .app-shell,.card,.card-filter,nav{ display:none !important; }
+}
+
+/* ===================== Mobile layout (≤ 576px) ===================== */
+@media (max-width: 576px){
+  /* Filters: stack nicely */
+  .card-filter .row > [class*="col-"]{ width:100%; }
+  .card-filter .btn{ width:100%; }
+
+  /* Table becomes “cards” */
+  .table-head.sticky-top{ display:none; }
+  #appointmentsTable,
+  #appointmentsTable tbody,
+  #appointmentsTable tr,
+  #appointmentsTable td{
+    display:block; width:100%;
+  }
+  #appointmentsTable tr{
+    background:#fff;
+    border:1px solid var(--ring);
+    border-radius:12px;
+    padding:.5rem .75rem;
+    margin:.5rem .5rem;
+    box-shadow: var(--shadow);
+  }
+  #appointmentsTable td{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.75rem;
+    padding:.45rem .25rem !important;
+    border:0 !important;
+  }
+  #appointmentsTable td::before{
+    content: attr(data-label);
+    font-weight:600;
+    color:#333;
+    flex: 0 0 48%;
+    max-width: 56%;
+  }
+  /* Make values wrap nicely */
+  #appointmentsTable td > *:not(.btn):not(.badge){ word-break:break-word; text-align:right; }
+
+  /* Action buttons row */
+  #appointmentsTable td[data-label="Actions"]{
+    margin-top:.35rem;
+    padding-top:.55rem !important;
+    border-top:1px dashed var(--ring) !important;
+    display:flex; gap:.4rem; justify-content:flex-end;
+  }
+  #appointmentsTable td[data-label="Actions"] .btn{
+    padding:.35rem .5rem; border-radius:10px;
+  }
+
+  /* Badges + pills a bit smaller */
+  .badge{ font-size:.775rem; }
+
+  /* Make the scroller height auto on phones */
+  .table-edge{
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Pagination compact */
+  .pagination{ gap:.25rem; }
+  .pagination .page-link{
+    padding:.35rem .55rem;
+    font-size:.9rem;
+    border-radius:10px;
+  }
+}

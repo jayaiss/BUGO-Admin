@@ -1,0 +1,70 @@
+/* ================================
+   Employee UI — emp.css
+   Palette:
+   --bg:#F2F2F2; --card:#ffffff; --accent:#EAE4D5; --text:#000000
+   ================================ */
+:root{
+  --bg:#F2F2F2;
+  --card:#ffffff;
+  --accent:#EAE4D5;
+  --text:#000000;
+  --muted: rgba(0,0,0,.6);
+  --ring: rgba(0,0,0,.08);
+  --shadow: 0 8px 28px rgba(0,0,0,.08);
+  --radius:16px;
+}
+
+body{ background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+
+/* Header actions */
+.page-tools{ display:flex; gap:.5rem; flex-wrap:wrap; }
+.page-tools .btn{ border-radius:12px; }
+
+/* Card shell */
+.card-surface{
+  border:1px solid var(--ring);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card-surface .card-header{
+  background: color-mix(in srgb, var(--accent) 68%, white);
+  border-bottom:1px solid var(--ring);
+  font-weight:700;
+}
+
+/* Keep your table layout exactly */
+.table{ margin:0; }
+.table thead th{
+  position:sticky; top:0; z-index:1;
+  /* don't override bg-primary; just make it sticky */
+  vertical-align:middle; font-weight:700;
+}
+.table td, .table th{ vertical-align:middle; }
+.table tbody tr:hover{ background: color-mix(in srgb, var(--accent) 18%, white); }
+
+/* Scroll area */
+.table-responsive{ max-height:500px; overflow:auto; }
+
+/* Pagination polish */
+.pagination{ --bs-pagination-active-bg:#111; --bs-pagination-active-border-color:#111; }
+.page-link{ border-radius:10px !important; border:1px solid var(--ring); background:#fff; }
+.page-item.active .page-link{ background:#111; color:#fff; border-color:#111; }
+
+/* Buttons */
+.btn-primary{ background:#111; border-color:#111; }
+.btn-primary:hover{ background:#000; border-color:#000; }
+.btn-outline-dark{ border-color:#111; color:#111; }
+.btn-outline-dark:hover{ background:#111; color:#fff; }
+
+/* Forms */
+.form-control{ border-radius:12px; border:1px solid var(--ring); }
+.form-control:focus{ border-color:#111; box-shadow:0 0 0 .2rem rgba(0,0,0,.08); }
+
+/* Modal section styling (shared) */
+.modal-content{ border-radius:20px; border:1px solid var(--ring); }
+.modal-header{ background: color-mix(in srgb, var(--accent) 68%, white); }
+.modal .border.rounded-3.bg-white{ box-shadow: 0 6px 16px rgba(0,0,0,.04); }
+
+
+

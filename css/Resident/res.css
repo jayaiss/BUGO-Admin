@@ -1,0 +1,200 @@
+/* ================================
+   Resident UI — res.css
+   Palette:
+   --bg:#F2F2F2; --card:#ffffff; --accent:#EAE4D5; --text:#000000
+   ================================ */
+:root{
+  --bg:#F2F2F2;      /* page background */
+  --card:#ffffff;    /* surfaces/cards */
+  --accent:#EAE4D5;  /* subtle headers/stripes */
+  --text:#000000;    /* text */
+  --muted: rgba(0,0,0,.6);
+  --ring: rgba(0,0,0,.08);
+  --shadow: 0 8px 28px rgba(0,0,0,.08);
+  --radius:16px;
+}
+
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Page shell */
+.app-shell{max-width:1200px;margin-inline:auto}
+.page-title{
+  font-weight:800; letter-spacing:.2px;
+  display:flex; align-items:center; gap:.6rem;
+}
+
+/* Cards */
+.card-surface{
+  border:1px solid var(--ring);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card-surface .card-header{
+  background: color-mix(in srgb, var(--accent) 68%, white);
+  border-bottom:1px solid var(--ring);
+  font-weight:700;
+}
+.card-surface .card-body{ padding:1rem 1rem; }
+
+/* Toolbar / filters */
+.toolbar{
+  display:flex; gap:.75rem; flex-wrap:wrap; align-items:center;
+}
+.toolbar .btn{ border-radius:12px; }
+.filters.card-surface{ padding:.75rem; }
+.filters .form-label{ font-size:.85rem; color:var(--muted); }
+
+/* ================================
+   TABLE (preserve your current layout)
+   ================================ */
+.table-wrap{
+  border:1px solid var(--ring);
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+
+/* Keep your Bootstrap table look:
+   - DO NOT change header color/striping/widths
+   - Only make header sticky for usability */
+.table{ margin:0; }
+.table thead th{
+  position:sticky; top:0; z-index:2;
+  /* no background override here to keep your blue header */
+  font-weight:700;
+  vertical-align:middle;
+}
+.table td, .table th{
+  /* no white-space/ellipsis overrides to keep your 200px widths + full text */
+  vertical-align:middle;
+}
+
+/* Subtle hover without fighting your striping */
+.table tbody tr:hover{
+  background: color-mix(in srgb, var(--accent) 18%, white);
+}
+
+.table .actions{
+  display:flex; gap:.4rem; flex-wrap:wrap;
+}
+
+.badge-soft{
+  background: color-mix(in srgb, var(--accent) 60%, white);
+  border:1px solid var(--ring); color:#111;
+}
+
+/* Scroll hint */
+.scrollable{
+  max-height:480px; overflow:auto;
+  background:
+    linear-gradient(var(--card),transparent) top/100% 24px no-repeat,
+    linear-gradient(transparent,var(--card)) bottom/100% 24px no-repeat;
+}
+
+/* Pagination */
+.pagination{ --bs-pagination-active-bg:#111; --bs-pagination-active-border-color:#111; }
+.page-link{
+  border-radius:10px !important;
+  border:1px solid var(--ring);
+  background:#fff;
+}
+.page-item.active .page-link{
+  background:#111; color:#fff; border-color:#111;
+}
+
+/* Buttons */
+.btn-primary{ background:#111; border-color:#111; }
+.btn-primary:hover{ background:#000; border-color:#000; }
+.btn-outline-dark{ border-color:#111; color:#111; }
+.btn-outline-dark:hover{ background:#111; color:#fff; }
+
+/* Forms */
+.form-control, .form-select{
+  border-radius:12px;
+  border:1px solid var(--ring);
+}
+.form-control:focus, .form-select:focus{
+  border-color:#111; box-shadow:0 0 0 .2rem rgba(0,0,0,.08);
+}
+
+/* Modals */
+.modal-content{ border-radius:20px; border:1px solid var(--ring); }
+.modal-header{ background: color-mix(in srgb, var(--accent) 68%, white); }
+
+/* ================================
+   Mobile table → cards (OPT-IN)
+   Apply class 'table--cards' to the table if/when you want this behavior.
+   Your current table remains unchanged on mobile.
+   ================================ */
+@media (max-width: 768px){
+  .toolbar{ justify-content:space-between; }
+
+  .table.table--cards thead{ display:none; }
+  .table.table--cards,
+  .table.table--cards tbody,
+  .table.table--cards tr,
+  .table.table--cards td{ display:block; width:100%; }
+  .table.table--cards tr{ border-bottom:1px solid var(--ring); padding:.75rem; }
+  .table.table--cards td{
+    border:0; padding:.25rem 0;
+    display:flex; justify-content:space-between; gap:1rem;
+  }
+  .table.table--cards td::before{
+    content: attr(data-label);
+    font-weight:600; color:var(--muted);
+  }
+  .table.table--cards .actions{ justify-content:flex-end; }
+  .scrollable{ max-height:none; }
+}
+
+/* Little utilities */
+.gap-6{ gap:1.5rem; }
+/* ===== View Modal enhancements ===== */
+.modal-header{ background: color-mix(in srgb, var(--accent) 75%, white); }
+
+.avatar{
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: color-mix(in srgb, var(--accent) 70%, white);
+  border:1px solid var(--ring);
+  font-weight:800;
+}
+
+.chip{
+  display:inline-flex; align-items:center; gap:.35rem;
+  background: color-mix(in srgb, var(--accent) 60%, white);
+  border:1px solid var(--ring);
+  border-radius:999px;
+  padding:.25rem .6rem;
+  font-size:.85rem;
+}
+
+.view-kv{
+  display:grid;
+  grid-template-columns: 220px 1fr;
+  gap:.5rem 1rem;
+}
+.view-kv .label{ font-weight:600; color:var(--muted); display:flex; align-items:center; }
+.view-kv .value{
+  background:#f5f5f5;
+  border:1px solid var(--ring);
+  border-radius:10px;
+  padding:.5rem .75rem;
+  min-height:38px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+
+.copy-btn{ border:1px solid var(--ring); }
+
+.mask{ -webkit-text-security: disc; text-security: disc; }
+
+@media (max-width: 768px){
+  .view-kv{ grid-template-columns: 1fr; }
+}

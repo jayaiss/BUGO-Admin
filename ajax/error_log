@@ -1,0 +1,74 @@
+[30-Aug-2025 10:11:11 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php:77
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php(77): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php on line 77
+[30-Aug-2025 10:11:26 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php:77
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php(77): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php on line 77
+[30-Aug-2025 10:11:35 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php:77
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php(77): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php on line 77
+[30-Aug-2025 10:11:37 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php:77
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php(77): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/view_case_and_status.php on line 77
+[01-Sep-2025 06:36:40 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:38:26 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:39:04 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:39:11 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:40:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:43:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:44:33 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:50:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:51:50 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[01-Sep-2025 06:51:54 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php:70
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php(70): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/fetch_resident_details.php on line 70
+[04-Sep-2025 16:13:55 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/session_timeout.php on line 13) in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/faq_create.php on line 18
+[04-Sep-2025 16:13:55 UTC] PHP Warning:  Undefined array key "faq_id" in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/faq_create.php on line 87
+[17-Sep-2025 15:17:03 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/session_timeout.php on line 13) in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/faq_create.php on line 18
+[17-Sep-2025 15:17:03 UTC] PHP Warning:  Undefined array key "faq_id" in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/ajax/faq_create.php on line 87

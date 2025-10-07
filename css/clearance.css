@@ -1,0 +1,232 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11px; /* Slightly smaller font */
+    line-height: 1.3; /* Reduce line spacing */
+    background-color: #fff;
+    padding: 10px;
+}
+
+/* Container to fit all content */
+.container {
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    max-width: 850px; /* Suitable for A4 & Letter */
+}
+
+/* Header */
+.logo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.logo {
+    width: 65px; /* Reduce logo size */
+    height: auto;
+}
+
+.header-text {
+    text-align: center;
+}
+
+.header-text h3,
+.header-text h4 {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.header-line {
+    border-top: 1px solid black;
+    margin-top: 2px;
+}
+
+/* Barangay Clearance Title */
+h2 {
+    text-align: center;
+    font-size: 18px; /* Adjusted for compact layout */
+    font-weight: bold;
+}
+
+/* Council Section */
+.council-box {
+    width: 100%;
+    padding: 5px;
+    font-size: 11px; /* Reduce font size */
+}
+
+.official-title {
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.official-title strong {
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Certification Text */
+.barangay-certification {
+    margin-top: 8px;
+}
+
+.barangay-certification p {
+    text-align: justify;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+/* Signature Section */
+.signature-section {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.signature-section .sign {
+    text-align: center;
+}
+
+.signature-section .sign h5 {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* Additional Details Section */
+.additional-details {
+    margin-top: 8px;
+    line-height: 1.2;
+    font-size: 11px;
+}
+
+/* Control Number */
+.control-number {
+    text-align: right;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Two-Column Layout */
+.side-by-side {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.left-content {
+    flex: 1;
+    padding-right: 10px;
+    border: 1px solid black; /* Adds border around the content */
+    padding: 10px; /* Adds some spacing inside the box */
+    border-radius: 1px; /* Optional: Rounds the corners of the box */
+    margin-bottom: 30px; /* Ensures space between sections */
+}
+
+.right-content {
+    flex: 2;
+    padding-left: 10px; /* Ensures some padding for spacing */
+    margin-top: 10px;
+}
+
+/* Make sure the text on the right does not collide */
+.right-content p {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.right-content .control-number p {
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.right-content .signature-section {
+    text-align: center;
+}
+
+.right-content .signature-section p {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+/* Thumbprint Section */
+.thumb-section {
+    margin-top: 20px;
+    text-align: center;
+    position: relative;
+    top: 10px; /* Adjust this value to move the thumb box */
+}
+
+.thumb-box {
+    border: 1px solid black;
+    width: 90px; /* Set width of the thumb box */
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* As per Records Section (Below the box) */
+.records-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.records-section section {
+    width: 48%;
+}
+
+.records-section p {
+    margin-bottom: 5px;
+}
+
+/* PRINT OPTIMIZATION */
+@media print {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 100%;
+        width: 100%;
+        page-break-before: avoid; /* Prevent page breaks */
+    }
+
+    .logo {
+        width: 90px; /* Reduce logo size further */
+    }
+
+    .barangay-certification p,
+    .additional-details p,
+    .signature-section p {
+        font-size: 10px; /* Ensures it fits on one page */
+    }
+
+    .thumb-box {
+        width: 50px;
+        height: 50px;
+    }
+
+    .signature-section {
+        margin-top: 8px;
+    }
+
+    .header-line {
+        margin-top: 1px;
+    }
+
+    @page {
+        size: auto; /* Automatically adjust to the paper size */
+        margin: 5mm; /* Set a small default margin */
+    }
+}

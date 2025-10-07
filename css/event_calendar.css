@@ -1,0 +1,111 @@
+.calendar-container {
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+  }
+  .calendar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .weekday, .day-cell {
+    height: 60px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border-radius: 5px;
+  }
+  .weekday {
+    font-weight: bold;
+    background-color: #e9ecef;
+  }
+  .day-cell:hover {
+    background-color: #f1f3f5;
+  }
+  .today {
+    /* background-color: #ffc107; */
+    color: green;
+    font-weight: bold;
+  }
+  .empty-cell {
+    background-color: transparent;
+  }
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  .container-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 700px;
+  }
+  #year-select {
+    max-width: 120px;
+    margin: 0 auto;
+  }
+  .event-details {
+    background-color: #7e4d1a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+    color: white;
+  }
+  .event-header {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  .event-list {
+    margin-top: 20px;
+  }
+  .event-list label {
+    margin-left: 10px;
+  }
+  .time-schedule {
+    margin-top: 20px;
+  }
+  .map-container {
+    margin-top: 20px;
+    height: 200px;
+    background-color: #dcdcdc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* Hide the Add Event button by default */
+  .add-event-btn-container {
+    display: none;
+  }
+
+  .day-cell.event-day {
+    background-color: #ff6347;  /* Change to any color you prefer */
+    color: white;
+    font-weight: bold;
+  }
+  
+.event-header {
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 20px;
+}
+
+#selected-date {
+  font-size: 1.2rem;
+  color: white;
+}
+
+  
+  

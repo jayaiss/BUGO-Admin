@@ -1,0 +1,214 @@
+/* =========================
+   guidelines.css
+   - Uses your palette
+   - Polished table + modals
+   - Mobile-first, accessible
+   ========================= */
+:root{
+  --bg:#F2F2F2;     /* page background */
+  --card:#EAE4D5;   /* surfaces */
+  --accent:#B6B09F; /* accents */
+  --text:#000000;   /* text */
+  --muted: rgba(0,0,0,.60);
+  --ring: rgba(0,0,0,.10);
+  --ring-strong: rgba(0,0,0,.18);
+  --shadow: 0 10px 24px rgba(0,0,0,.10);
+  --radius: 16px;
+}
+
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Page container/card */
+.container{ max-width:1200px }
+.card{
+  background:var(--card);
+  border:1px solid var(--ring);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.card-header{
+  border-bottom:1px solid var(--ring);
+}
+.card-header h3{
+  font-weight:800; letter-spacing:.2px; margin:0; color:var(--text);
+}
+
+/* Header CTA */
+.card-header .btn{
+  border-radius:999px;
+  padding:.55rem 1rem;
+  font-weight:700;
+  border:1px solid var(--ring);
+  background:var(--accent);
+  color:#111;
+  box-shadow:var(--shadow);
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.card-header .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0,0,0,.12);
+}
+
+/* Table wrapper */
+.table-responsive{
+  border-top:1px solid var(--ring);
+}
+
+/* Table */
+.table{
+  margin:0;
+  --tbl-pad:.85rem;
+}
+.table thead th{
+  background: color-mix(in srgb, var(--accent) 30%, white);
+  color:#111;
+  border-bottom:1px solid var(--ring-strong);
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  font-size:.85rem;
+  position:sticky; top:0; z-index:1;
+}
+.table th, .table td{
+  vertical-align: middle !important;
+  padding: var(--tbl-pad) .9rem;
+  border-color: color-mix(in srgb, var(--ring) 70%, transparent);
+}
+
+/* Multi-line cells */
+.table td[style*="pre-wrap"]{
+  white-space: pre-wrap !important;
+  line-height:1.35;
+}
+
+/* Action buttons */
+.table .btn.btn-sm{
+  border-radius:999px;
+  padding:.35rem .6rem;
+  border:1px solid var(--ring);
+  box-shadow:none;
+}
+.table .btn-warning{
+  background: #ffdf7f; color:#111; border-color:#e6c768;
+}
+.table .btn-warning:hover{ filter:brightness(.98) }
+.table .btn-danger{
+  background: #e35d6a; border-color:#cc4f5b;
+}
+.table .btn-danger:hover{ filter:brightness(.98) }
+
+/* Empty state helper (if needed) */
+.table-empty{
+  padding:2rem 1rem; text-align:center; color:var(--muted);
+}
+
+/* Modals */
+.modal-content{
+  background:var(--card);
+  border:1px solid var(--ring);
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow:var(--shadow);
+}
+.modal-header, .modal-footer{
+  border-color:var(--ring);
+}
+.modal-title{ font-weight:800 }
+
+/* Forms */
+.form-label{ font-weight:700; color:#111 }
+.form-control, .form-select, textarea{
+  background:#fff;
+  border:1px solid var(--ring);
+  border-radius:12px;
+  padding:.6rem .75rem;
+  box-shadow:none;
+}
+.form-control:focus, .form-select:focus, textarea:focus{
+  border-color: color-mix(in srgb, var(--accent) 70%, black);
+  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--accent) 20%, transparent);
+  outline:0;
+}
+
+/* Add / Save buttons in modal */
+.modal-footer .btn-success{
+  background:#1f7a1f; border-color:#1a661a; font-weight:700; border-radius:999px;
+}
+.modal-footer .btn-secondary{
+  border-radius:999px;
+}
+
+/* SweetAlert2 palette match */
+.swal2-popup{
+  border-radius:18px !important;
+  background:var(--card) !important;
+  border:1px solid var(--ring) !important;
+  color:#111 !important;
+  box-shadow:var(--shadow) !important;
+}
+.swal2-styled.swal2-confirm{
+  border-radius:999px !important;
+  background:var(--accent) !important;
+  color:#111 !important;
+  box-shadow:var(--shadow) !important;
+}
+.swal2-styled.swal2-cancel{ border-radius:999px !important }
+
+/* Badge idea (if later used) */
+.badge{
+  padding:.5rem .65rem; border-radius:999px; font-weight:700;
+}
+
+/* Mobile: transform table rows into cards */
+@media (max-width: 768px){
+  .container{ padding-left:.75rem; padding-right:.75rem }
+  .card{ border-radius:14px }
+
+  .table, .table thead{ display:block; }
+  .table thead{ height:1px; overflow:hidden; clip-path: inset(50%); }
+  .table tbody{
+    display:grid; gap:12px; margin:0; border:0;
+  }
+  .table tbody tr{
+    display:grid; gap:8px;
+    background:#fff;
+    border:1px solid var(--ring);
+    border-radius:14px;
+    padding:12px;
+    box-shadow:var(--shadow);
+  }
+  .table tbody td{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    border:0; padding:.3rem 0;
+  }
+
+  /* Labels for each cell */
+  .table tbody tr td:nth-child(1)::before{ content:"Certificate"; font-weight:700; color:#111; margin-right:10px }
+  .table tbody tr td:nth-child(2)::before{ content:"Description"; font-weight:700; color:#111; margin-right:10px }
+  .table tbody tr td:nth-child(3)::before{ content:"Requirements"; font-weight:700; color:#111; margin-right:10px }
+  .table tbody tr td:nth-child(4)::before{ content:"Created"; font-weight:700; color:#111; margin-right:10px }
+  .table tbody tr td:nth-child(5)::before{ content:"Action"; font-weight:700; color:#111; margin-right:10px }
+
+  .table tbody td > *:not(button){ max-width:55% }
+  .table tbody td:nth-child(5){ justify-content:flex-end }
+}
+
+/* Desktop hover polish */
+@media (min-width: 992px){
+  .table tbody tr{ transition: background .15s ease, transform .02s ease }
+  .table tbody tr:hover{
+    background: color-mix(in srgb, var(--accent) 14%, white);
+    transform: translateY(-1px);
+  }
+}
+
+/* Focus visible (a11y) */
+:focus-visible{
+  outline:3px solid color-mix(in srgb, var(--accent) 35%, white);
+  outline-offset:2px;
+  border-radius:10px;
+}

@@ -1,0 +1,250 @@
+/* =========================
+   zoneLeaders.css
+   - Uses provided palette
+   - Clean card/table UI
+   - Great mobile experience
+   ========================= */
+:root{
+  --bg:#F2F2F2;     /* page background */
+  --card:#EAE4D5;   /* surfaces */
+  --accent:#B6B09F; /* accents */
+  --text:#000000;   /* text */
+  --muted: rgba(0,0,0,.55);
+  --ring: rgba(0,0,0,.10);
+  --ring-strong: rgba(0,0,0,.18);
+  --shadow: 0 10px 24px rgba(0,0,0,.10);
+  --radius: 16px;
+}
+
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01","cv01";
+}
+
+/* ===== Page shell ===== */
+.container{
+  max-width:1200px;
+}
+
+.page-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  margin-block:2rem 1.25rem;
+}
+
+.page-title,
+.container > .d-flex > h2{
+  font-weight:800;
+  letter-spacing:.2px;
+  margin:0;
+  color:var(--text);
+}
+
+/* Action buttons row */
+.container > .d-flex > .d-flex.gap-2 .btn{
+  border-radius:999px;
+  padding:.55rem 1rem;
+  font-weight:700;
+  box-shadow: var(--shadow);
+  border:1px solid var(--ring);
+  transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.container > .d-flex > .d-flex.gap-2 .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+/* Re-skin Bootstrap colors to palette */
+.btn-primary{
+  background: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 88%, black);
+  color:#111 !important;
+}
+.btn-primary:hover{
+  background: color-mix(in srgb, var(--accent) 86%, black);
+  border-color: color-mix(in srgb, var(--accent) 92%, black);
+}
+.btn-outline-primary{
+  color:#111;
+  border-color: color-mix(in srgb, var(--accent) 65%, black);
+}
+.btn-outline-primary:hover{
+  background: color-mix(in srgb, var(--accent) 25%, white);
+  border-color: color-mix(in srgb, var(--accent) 85%, black);
+}
+
+.btn-success{
+  background: #1f7a1f;
+  border-color:#1a661a;
+}
+.btn-success.btn-sm{ font-weight:700 }
+
+/* ===== Card/table container ===== */
+.table-responsive{
+  background: var(--card);
+  border:1px solid var(--ring);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+}
+
+/* Table */
+.table{
+  margin:0;
+  --tbl-pad: .9rem;
+}
+.table thead th{
+  position:sticky; top:0; z-index:1;
+  background: color-mix(in srgb, var(--accent) 30%, white);
+  color:#111;
+  border-bottom:1px solid var(--ring-strong);
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  font-size:.85rem;
+}
+.table th, .table td{
+  vertical-align: middle !important;
+  padding: var(--tbl-pad) .9rem;
+  border-color: color-mix(in srgb, var(--ring) 70%, transparent);
+}
+.table tbody tr{
+  transition: background .15s ease, transform .02s ease;
+}
+.table tbody tr:hover{
+  background: color-mix(in srgb, var(--accent) 14%, white);
+}
+
+/* Status chips */
+.badge.bg-success{
+  background: #1f7a1f !important;
+  padding:.5rem .65rem;
+  border-radius:999px;
+  font-weight:700;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.badge.bg-secondary{
+  background: #6c757d !important;
+  padding:.5rem .65rem;
+  border-radius:999px;
+  font-weight:700;
+}
+
+/* Row action buttons */
+td .btn.btn-sm{
+  border-radius: 999px;
+  padding:.35rem .6rem;
+}
+
+/* ===== Forms & Modals ===== */
+.modal-content{
+  border-radius: calc(var(--radius) - 2px);
+  border:1px solid var(--ring);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.modal-header{ border-bottom:1px solid var(--ring) }
+.modal-footer{ border-top:1px solid var(--ring) }
+.modal-title{ font-weight:800 }
+
+.form-label{ font-weight:700; color:#111 }
+.form-control, .form-select{
+  background: #fff;
+  border-radius: 12px;
+  border:1px solid var(--ring);
+  padding:.6rem .75rem;
+  box-shadow:none;
+}
+.form-control:focus, .form-select:focus{
+  border-color: color-mix(in srgb, var(--accent) 70%, black);
+  outline: 0;
+  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* ===== SweetAlert2 match palette ===== */
+.swal2-popup{
+  border-radius: 18px !important;
+  border:1px solid var(--ring) !important;
+  background: var(--card) !important;
+  color:#111 !important;
+  box-shadow: var(--shadow) !important;
+}
+.swal2-styled.swal2-confirm{
+  border-radius:999px !important;
+  background: var(--accent) !important;
+  color:#111 !important;
+  box-shadow: var(--shadow) !important;
+}
+.swal2-styled.swal2-cancel{
+  border-radius:999px !important;
+}
+
+/* ===== Empty state ===== */
+.table-empty{
+  text-align:center;
+  padding:2rem 1rem;
+  color:var(--muted);
+}
+
+/* ===== Utility ===== */
+.text-nowrap{ white-space:nowrap }
+
+/* ===== Mobile card view =====
+   Converts table rows into clean cards under 768px */
+@media (max-width: 768px){
+  .container{ padding-left:.75rem; padding-right:.75rem }
+
+  .table-responsive{
+    border:none;
+    background:transparent;
+    box-shadow:none;
+  }
+  table.table, .table thead{ display:block; }
+  .table thead{ height:1px; overflow:hidden; clip-path: inset(50%); }
+  .table tbody{ display:grid; gap:12px; }
+
+  .table tbody tr{
+    display:grid;
+    gap:8px;
+    background: var(--card);
+    border:1px solid var(--ring);
+    border-radius: var(--radius);
+    padding:12px;
+    box-shadow: var(--shadow);
+  }
+  .table tbody td{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border:0;
+    padding:.25rem 0;
+  }
+
+  /* Fake labels using headers text */
+  .table tbody tr td:nth-child(1)::before{ content:"Zone Leader"; font-weight:700; color:#111 }
+  .table tbody tr td:nth-child(2)::before{ content:"Contact";     font-weight:700; color:#111 }
+  .table tbody tr td:nth-child(3)::before{ content:"Zone";        font-weight:700; color:#111 }
+  .table tbody tr td:nth-child(4)::before{ content:"Status";      font-weight:700; color:#111 }
+  .table tbody tr td:nth-child(5)::before{ content:"Actions";     font-weight:700; color:#111 }
+
+  .table tbody td > *:not(.badge){ max-width:55% }
+  td .d-flex.justify-content-center{ justify-content:flex-end !important }
+  .container > .d-flex > .d-flex.gap-2 .btn{ padding:.55rem .85rem }
+}
+
+/* ===== Larger screens polish ===== */
+@media (min-width: 992px){
+  .container{ padding-top:.75rem; }
+  .table tbody tr:hover{ transform: translateY(-1px); }
+}
+
+/* ===== Focus visible (a11y) ===== */
+:focus-visible{
+  outline:3px solid color-mix(in srgb, var(--accent) 35%, white);
+  outline-offset:2px;
+  border-radius:10px;
+}

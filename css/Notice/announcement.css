@@ -1,0 +1,120 @@
+/* =========================
+   css/Notice/announcement.css
+   Announcements styling
+   ========================= */
+
+:root {
+  --bg:#F2F2F2;     /* page background */
+  --card:#EAE4D5;   /* surfaces */
+  --accent:#B6B09F; /* accents */
+  --text:#000000;   /* text */
+  --ring: rgba(0,0,0,.08);
+  --shadow: 0 6px 16px rgba(0,0,0,.08);
+  --radius: 14px;
+}
+
+/* Base */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Section container */
+.container h2 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+/* Card */
+.card {
+  border: 1px solid var(--ring);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card-header {
+  background: var(--accent) !important;
+  color: var(--text) !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Table */
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: color-mix(in srgb, var(--accent) 25%, white);
+}
+
+.table-hover tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 15%, white);
+  transition: 0.25s ease;
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border: none;
+  color: var(--text);
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent) 80%, black);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #ccc;
+  border: none;
+  color: var(--text);
+}
+.btn-secondary:hover {
+  background: #b1b1b1;
+  color: #fff;
+}
+
+/* Pagination */
+.pagination .page-link {
+  border-radius: var(--radius);
+  color: var(--text);
+}
+.pagination .page-item.active .page-link {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Form */
+.form-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+  border-radius: var(--radius);
+  border: 1px solid var(--ring);
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .row.g-2 > div {
+    flex: 100% !important;
+  }
+  .table-responsive {
+    max-height: 400px;
+  }
+}

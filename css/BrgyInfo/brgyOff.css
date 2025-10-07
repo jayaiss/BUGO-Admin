@@ -1,0 +1,136 @@
+:root{
+  --bg:#F2F2F2;   /* page background */
+  --card:#EAE4D5; /* surfaces */
+  --accent:#B6B09F; /* accents */
+  --text:#000000; /* text */
+}
+
+/* Base */
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+
+/* Header / Toolbar */
+.page-header{gap:.75rem}
+.page-header .title{font-weight:700}
+.search-input{max-width:420px}
+
+/* ------- Table/Card: friendlier + clearer -------- */
+.card-surface{
+  background:#fff;               /* white for clarity */
+  border:1px solid #e5e7eb;      /* subtle border */
+  border-radius:1rem;
+}
+
+/* Header: white, sticky, crisp divider */
+.card-surface .table thead{ background:#fff; }
+.card-surface .table thead th{
+  position:sticky; top:0; z-index:1;
+  border-bottom:1px solid #e5e7eb !important;
+  box-shadow:0 1px 0 rgba(0,0,0,.03);
+  color:#111827; font-weight:600;
+}
+
+/* Body cells + zebra striping + hover */
+.table tbody td{ border-color:#f0f2f5 !important; }
+.table tbody tr:nth-child(odd){ background:#f9fafb; }
+.table tbody tr:nth-child(even){ background:#ffffff; }
+.table tbody tr:hover{ background:#eef2f7; }
+
+/* Avatars */
+.avatar{
+  width:56px;height:56px;object-fit:cover;border-radius:50%;
+  border:2px solid color-mix(in srgb, var(--accent) 60%, white)
+}
+
+/* Status badge (Active default); Inactive adjusted via .text-danger on span */
+.status-badge{font-size:.825rem; background:#e8f5ee; color:#1a7f3c;}
+.badge.text-danger{ background:#fde8e8; color:#b42318; }
+
+/* Actions */
+.action-stack{display:flex;gap:.5rem;flex-wrap:wrap}
+
+/* Select2 alignment with BS forms */
+.select2-container .select2-selection--single{height:38px}
+.select2-container--default .select2-selection--single .select2-selection__rendered{line-height:38px}
+.select2-container--default .select2-selection--single .select2-selection__arrow{height:38px}
+
+/* Buttons: outline contrast tuned */
+.btn-outline-primary{
+  --bs-btn-color:#1f4a57;
+  --bs-btn-border-color:#1f4a57;
+  --bs-btn-hover-bg:#1f4a57;
+  --bs-btn-hover-border-color:#1f4a57;
+  --bs-btn-active-bg:#1f4a57;
+}
+.btn-outline-secondary{
+  --bs-btn-color:#374151;
+  --bs-btn-border-color:#9ca3af;
+  --bs-btn-hover-bg:#374151;
+  --bs-btn-hover-border-color:#374151;
+  --bs-btn-active-bg:#374151;
+  --bs-btn-active-border-color:#374151;
+}
+
+/* Responsive: transform table into stacked cards on small screens */
+@media (max-width:575.98px){
+  .table thead{display:none}
+  .table tbody tr{
+    display:block;margin:.75rem 0;padding:.75rem;border-radius:.75rem;background:#fff;
+    border:1px solid #e5e7eb; box-shadow:0 1px 3px rgba(0,0,0,.04)
+  }
+  .table tbody td{
+    display:flex;justify-content:space-between;gap:1rem;border:0;padding:.35rem .25rem
+  }
+  .table tbody td::before{
+    content:attr(data-label);font-weight:600;opacity:.8
+  }
+  .table tbody tr:hover{ background:#fff; } /* avoid harsh hover on mobile cards */
+  .action-stack{justify-content:flex-end}
+}
+
+/* Keep modals clean on mobile */
+.modal-content{border-radius:1rem}
+.page-header-grid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* left column just inherits */
+.header-left .title{ font-weight:700; }
+
+/* right column: search + button aligned to the right on desktop */
+.header-right{
+  display:flex;
+  gap:.5rem;
+  align-items:center;
+}
+
+/* search width behavior */
+.search-input{ max-width:420px; }
+
+/* Add button sizing */
+.btn-add{ white-space:nowrap; }
+
+/* >= md: put left and right side-by-side, right aligned */
+@media (min-width: 768px){
+  .page-header-grid{
+    grid-template-columns: 1fr auto;
+    align-items:center;
+    margin-bottom: 1.5rem;
+  }
+  .header-right{
+    justify-content:flex-end;
+  }
+}
+
+/* < md: stack nicely, inputs full width */
+@media (max-width: 767.98px){
+  .header-right{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .search-input{ max-width:none; width:100%; }
+  .btn-add{ width:100%; }
+}

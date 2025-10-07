@@ -1,0 +1,126 @@
+/* =========================
+   PALETTE & BASICS
+   ========================= */
+:root{
+  --bg:#F2F2F2;
+  --card:#ffffff;
+  --accent:#EAE4D5;
+  --text:#000000;
+  --muted: rgba(0,0,0,.55);
+  --ring: rgba(0,0,0,.10);
+  --shadow: 0 6px 18px rgba(0,0,0,.08);
+  --radius: 14px;
+}
+
+html,body{height:100%}
+body{ background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+
+h3{ font-weight:800; letter-spacing:.2px; color:var(--text); display:flex; gap:.5rem; align-items:center; }
+
+/* =========================
+   CARD + LAYOUT
+   ========================= */
+.card{
+  background:var(--card);
+  border:1px solid var(--ring);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card-body{ padding:1rem; }
+.card--flush .card-body{ padding:0 }
+
+.card .filters{
+  padding: 1rem 1rem .75rem;
+  border-bottom:1px solid var(--ring);
+  background: color-mix(in srgb, var(--accent) 40%, white);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+.filters .form-label{ margin-bottom:.25rem; color:var(--muted); }
+.filters .form-select, .filters .form-control{ height:38px; }
+.filters .row.g-2{ row-gap:.75rem }
+
+/* =========================
+   TABLE
+   ========================= */
+.table-wrapper{ overflow:auto; width:100%; }
+.audit-table{
+  width:100%;
+  min-width:980px;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.audit-table thead th{
+  position:sticky; top:0; z-index:2;
+  background:var(--card);
+  text-transform:uppercase;
+  font-size:.8rem; letter-spacing:.3px;
+  color:#222;
+  border-bottom:1px solid var(--ring);
+  padding:.85rem .9rem;
+}
+.audit-table tbody td{
+  padding:.85rem .9rem;
+  border-bottom:1px solid color-mix(in srgb, var(--ring) 70%, white);
+  vertical-align:middle;
+}
+.audit-table tbody tr:hover{
+  background: color-mix(in srgb, var(--accent) 30%, white);
+}
+.audit-table td:last-child, .audit-table th:last-child{ width:120px; }
+
+/* =========================
+   PILLS
+   ========================= */
+.pill{
+  font-size:.72rem; font-weight:700; text-transform:uppercase;
+  padding:4px 10px; border-radius:999px; display:inline-block; border:1px solid transparent;
+}
+.pill-default{ background:#e9ecef; color:#000; border-color:#dfe3e6; }
+.pill-role{ background:#f8f9fa; color:#111; border-color:#dfe3e6; }
+.pill-archived{ background:#fde2e1; color:#7a1f1a; border-color:#fac7c4; }
+.pill-edited{ background:#fff2cc; color:#6b5600; border-color:#ffe59a; }
+.pill-added{ background:#dcf3e6; color:#0b5b35; border-color:#bee7d3; }
+.pill-viewed{ background:#eceff1; color:#263238; border-color:#dde3e6; }
+.pill-restored{ background:#dcf3e6; color:#0b5b35; border-color:#bee7d3; }
+.pill-login{ background:#dbe8ff; color:#0a2f8a; border-color:#c4d8ff; }
+.pill-logout{ background:#ececec; color:#343a40; border-color:#dedede; }
+.pill-update_status{ background:#e9ddff; color:#3b2486; border-color:#d7c6ff; }
+.pill-batch_add{ background:#dcf3e6; color:#0b5b35; border-color:#bee7d3; }
+.pill-urgent_request{ background:#ffe6d8; color:#7a2f0e; border-color:#ffd0b6; }
+.pill-print{ background:#e3f2fd; color:#0d47a1; border-color:#cbe7fb; }
+
+/* =========================
+   BUTTONS & PAGINATION
+   ========================= */
+.btn{ border-radius:999px; font-weight:600; }
+.btn.btn-primary{ background:#111; border-color:#111; }
+.btn.btn-primary:hover{ filter:brightness(.9); }
+.btn.btn-outline-primary{ border-color:#111; color:#111; }
+.btn.btn-outline-primary:hover{ background:#111; color:#fff; }
+.btn.btn-outline-secondary{ border-color:#bbb; color:#222; }
+.btn.btn-outline-secondary:hover{ background:#eee; }
+
+.pagination{ padding: .75rem 1rem 1rem; margin:0; }
+.page-item .page-link{ border-radius:10px; border-color:var(--ring); color:#111; background:#fff; }
+.page-item.active .page-link{ background:#111; color:#fff; border-color:#111; }
+
+/* =========================
+   MOBILE
+   ========================= */
+@media (max-width: 768px){
+  .filters{ padding:.75rem }
+  .filters .row > [class*="col-"]{ width:100% }
+  .btn-sm{ padding:2px 10px; font-size:.78rem; }
+  .audit-table{ min-width:720px }
+}
+
+/* =========================
+   PRINT
+   ========================= */
+@media print{
+  body{ background:#fff }
+  .filters, .pagination, .btn, nav{ display:none!important }
+  .card, .card-body{ box-shadow:none; border:0; padding:0 }
+  .audit-table thead th{ position:static }
+}

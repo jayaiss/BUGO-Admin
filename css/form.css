@@ -1,0 +1,360 @@
+
+/* Main Container */
+.container {
+    width: 80%;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Logo Header Adjustments */
+.logo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space logos evenly */
+    margin-bottom: 20px;
+}
+
+
+.logo {
+    width: 150px; /* Increased size */
+    height: 150px; /* Adjust height proportionally */
+    border-radius: 50%; /* Circular logo */
+}
+
+/* Header Text Centering */
+.header-text {
+    text-align: center;
+    flex: 1; /* Take remaining space */
+    margin: 0 20px; /* Space between logos and text */
+}
+
+.header-text h2, .header-text h3 {
+    margin: 5px 0;
+}
+.header-text .mailss {
+    color: blue;
+}
+.header-text span {
+    color: #000;}
+
+.header-line {
+    height: 3px; /* Thinner horizontal line */
+    background-color: #000; /* Black line */
+    border: none;
+    margin-bottom: 20px;
+}
+
+/* Certification Section */
+.barangay-certification h4 {
+    text-align: center;
+    font-weight: bold;
+    /* text-decoration: underline; */
+    margin-bottom: 10px;
+}
+
+.barangay-certification p {
+    text-align: justify;
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Additional Details Section */
+.additional-details p {
+    margin: 5px 0;
+    /* font-size: 40pt; */
+}
+
+/* Signature Section */
+.signature-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.signature-section .sign {
+    margin: 20px 0;
+}
+
+.signature-section .sign p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+/* Print Button (Outside Container) */
+.print-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #088395;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    position: fixed;  /* Fix the button at the bottom */
+    left: 50%;        /* Center horizontally */
+    bottom: 20px;     /* Position 20px from the bottom */
+    transform: translateX(100%); /* Adjust for proper centering */
+}
+
+.print-btn:hover {
+    background-color: #0deb57;
+}
+.council-box {
+    border: 2px solid black; /* Black border */
+    padding: 15px; /* Inner spacing */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 20px; /* Spacing from other elements */
+}
+p span {
+    display: block;
+    font-style: italic; /* Optional: Makes the title italic */
+    font-size: 10px; /* Adjust the font size if needed */
+}
+.official-title {
+    text-align: justify; /* Centers the content */
+    margin-top: 10px; /* Optional: Adds some spacing above */
+}
+
+.official-title strong {
+    font-size: 12px; /* Adjust the font size for the name */
+}
+
+.official-title span {
+    display: block;
+    font-size: 12px; /* Adjust the font size for the title */
+    font-style: italic;
+}
+
+
+/* Left and Right Section Layout */
+.side-by-side {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px; /* Space between the columns */
+}
+
+/* Styling for the left section */
+.side-by-side .left-content {
+    width: 30%; /* Take up 50% of the container */
+    padding-left: 30px; /* Add some spacing on the right */
+    box-sizing: border-box;
+}
+
+.side-by-side .left-content h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.side-by-side .left-content p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Styling for the right section */
+.side-by-side .right-content {
+    width: 70%; /* Take up 50% of the container */
+    padding-right: 180px; /* Add some spacing on the left */
+    box-sizing: border-box;
+    line-height: 1.8;
+}
+
+.side-by-side .right-content p {
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .side-by-side {
+        flex-direction: column; /* Stack on small screens */
+        gap: 10px;
+    }
+
+    .side-by-side .left-content,
+    .side-by-side .right-content {
+        width: 100%; /* Full width for each column */
+        padding: 0;
+        border: none; /* Remove border in mobile view */
+    }
+}
+
+
+/* Print Styles */
+@media print {
+    /* Hide elements not to be printed */
+    button {
+        display: none;
+    }
+    /* Ensure header line is visible */
+    .header-line {
+        display: block; /* Make sure it shows up in print */
+        border: 0;
+        border-top: 2px solid #000; /* Adjust the line thickness and color */
+        margin: 20px 0; /* Add some space above and below the line */
+    }
+    
+
+    /* Page setup for different paper sizes */
+    @page {
+        margin: 10mm;
+        size: auto; /* Let the browser decide the paper size */
+    }
+
+    /* Ensure content fits within the page */
+    .container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        font-size: 14pt; /* Default font size for print */
+        display: block; /* Change to block layout to ensure proper stacking */
+        position: relative; /* Position relative for logo background */
+    }
+    
+
+
+    body {
+        margin: 0;
+        font-size: 14pt; /* Adjusted font size for print */
+    }
+
+    header,
+    .barangay-certification,
+    .additional-details,
+    .signature-section {
+        page-break-inside: avoid;
+    }
+
+    /* Ensure proper space between paragraphs */
+    .barangay-certification p {
+        margin-top: 20px;
+    }
+
+    /* Make text in each section larger */
+    .barangay-certification p,
+    .signature-section p {
+        font-size: 16pt; /* Larger font size for text inside the certification */
+        line-height: 1.6; /* Improve readability */
+    }
+
+    .barangay-certification h4 {
+        font-size: 30pt; /* Larger title */
+    }
+
+    .header-text h2, .header-text h3 {
+        font-size: 22pt; /* Adjust header text size */
+    }
+    .header-text h2 {
+        font-size: 22pt; /* Ensure font size is appropriate */
+        line-height: 1.2; /* Adjust line height to prevent line breaks */
+        white-space: nowrap; /* Prevent the text from breaking into multiple lines */
+        text-align: center; /* Center align the text if needed */
+    }
+    .header-text .mailss{
+        font-size: 12pt;
+    }
+
+    /* Additional Details Section */
+    .additional-details {
+        margin-top: 100px; /* Add space above additional details */
+        /* font-size: 20pt; Make text larger */
+        line-height: 1.6; /* Improve readability */
+        flex: 1; /* Allow the additional details to take up remaining space */
+    }
+
+    .additional-details p {
+        margin-bottom: 20px; /* Space between paragraphs */
+        /* font-size: 50pt; */
+    }
+
+    /* Signature Section */
+    .signature-section {
+        margin-top: 100px;
+        text-align: right; /* Align the content to the right side of the page */
+    }
+
+    .signature-section .sign {
+        display: inline-block; /* Keep the signature content together */
+        text-align: center; /* Center the text inside the signature box */
+    }
+
+    .signature-section .signature-fname {
+        font-size: 15pt;
+        margin-top: 5px;
+    }
+
+    .signature-section .signature-name {
+        font-size: 20pt;
+    }
+
+    /* Ensures the signature is placed on the right side in print */
+    .signature-section {
+        position: absolute;
+        right: 0;
+        bottom: 30px; /* Adjust the bottom margin to your preference */
+        text-align: right; /* Align text to the right */
+        width: 50%; /* Adjust the width of the signature section if necessary */
+    }
+     /* Header adjustments for logo spacing */
+     .logo-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Space logos evenly */
+        margin-bottom: 20px;
+    }
+
+    .logo-header img {
+        margin-left: 40px; /* Add space to the left of the logos */
+        margin-right: 40px; /* Add space to the right of the logos */
+        margin-bottom: 150px;
+    }
+
+    /* Hide footer and button elements for print */
+    .py-4.bg-light.mt-auto,
+    .mt-4,
+    .print-btn {
+        display: none;
+    }
+    /* Page-Specific Adjustments for Different Sizes */
+    /* A4 Paper Size */
+    @media print and (size: A4) {
+        @page {
+            size: A4 portrait; /* A4 paper size in portrait orientation */
+        }
+        .container {
+            font-size: 12pt; /* Adjust font size for A4 paper */
+        }
+    }
+
+    /* Letter Paper Size */
+    @media print and (size: letter) {
+        @page {
+            size: letter portrait; /* Letter paper size in portrait orientation */
+        }
+        .container {
+            font-size: 12pt; /* Adjust font size for Letter paper */
+        }
+    }
+
+    /* Legal Paper Size */
+    @media print and (size: legal) {
+        @page {
+            size: legal portrait; /* Legal paper size in portrait orientation */
+        }
+        .container {
+            font-size: 12pt; /* Adjust font size for Legal paper */
+        }
+    }
+}

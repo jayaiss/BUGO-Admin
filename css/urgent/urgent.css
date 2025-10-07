@@ -1,0 +1,120 @@
+/* ===== Color Palette =====
+   BG light: #F2F2F2
+   Card/headers: #EAE4D5
+   Accent/borders: #B6B09F
+   Text/primary: #000000
+=========================== */
+
+:root{
+  --bg:#F2F2F2;
+  --card:#EAE4D5;
+  --accent:#B6B09F;
+  --text:#000000;
+}
+
+html,body{
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol", sans-serif;
+}
+
+/* Card look */
+.app-card{
+  background-color: var(--card);
+  border: none;
+}
+
+/* Card header strip */
+.card-header{
+  background-color: var(--accent);
+  color: var(--text);
+  font-weight: 700;
+  border: none;
+  border-radius: 1rem 1rem 0 0;
+}
+
+/* Inputs */
+.form-select, .form-control{
+  background-color: var(--bg);
+  border: 1px solid var(--accent);
+  color: var(--text);
+}
+
+.form-select:focus, .form-control:focus{
+  border-color: var(--text);
+  box-shadow: 0 0 0 .2rem rgba(0,0,0,.15);
+}
+
+/* Buttons (use black for primary action) */
+.btn-danger{
+  background-color: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+  transition: all .2s ease;
+}
+.btn-danger:hover, .btn-danger:focus{
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* Resident details mini rows */
+.detail{
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: .75rem;
+  padding: .75rem .9rem;
+}
+.detail + .detail{ margin-top: .5rem; }
+
+.detail-label{
+  display:block;
+  font-size:.8rem;
+  color:#333;
+  opacity:.8;
+}
+.detail-value{
+  font-weight:600;
+}
+
+/* Select2 skin to match palette */
+.select2-container .select2-selection--single{
+  height: calc(2.875rem + 2px);
+  background-color: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: .5rem;
+  display:flex; align-items:center;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  line-height: 2.875rem;
+  padding-left: .75rem;
+  color: var(--text);
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  height: 100%;
+}
+.select2-dropdown{
+  background-color: var(--bg);
+  border: 1px solid var(--accent);
+}
+.select2-results__option{ color: var(--text); }
+
+/* Sticky submit on mobile */
+.sticky-submit{
+  position: sticky;
+  bottom: .75rem;
+  z-index: 1020;
+}
+
+/* Responsive typography */
+@media (max-width: 576px){
+  .h2-md{ font-size: 1.25rem; }
+  .form-select, .form-control{ font-size: .95rem; }
+  .btn{ font-size: 1rem; padding: .8rem; }
+}
+
+/* Subtle borders for upload box */
+#uploadCedulaContainer{
+  background: #f8f9fa;
+  border-color: var(--accent)!important;
+}

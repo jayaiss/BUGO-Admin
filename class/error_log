@@ -1,0 +1,33 @@
+[28-Aug-2025 18:27:07 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:106
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(106): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 106
+[28-Aug-2025 18:28:52 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:106
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(106): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 106
+[28-Aug-2025 18:28:58 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:106
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(106): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 106
+[28-Aug-2025 18:33:17 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:194
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(194): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 194
+[28-Aug-2025 18:33:29 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:194
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(194): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 194
+[28-Aug-2025 18:34:20 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry 'jayacop9@gmail.com' for key 'u_email' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php:194
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php(194): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/class/update_resident.php on line 194
+[04-Oct-2025 09:53:15 Asia/Manila] Cedula Payment: 185
+[04-Oct-2025 09:57:26 Asia/Manila] Calculated Cedula Payment: 185
+[04-Oct-2025 10:00:31 Asia/Manila] Calculated Cedula Payment: 185

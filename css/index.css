@@ -1,0 +1,223 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.notification-section {
+    background-color: #ffc107;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+}
+
+.notification-section p {
+    margin: 0;
+}
+
+.notification-section i {
+    color: #fff;
+    margin-right: 5px;
+}
+
+.navbar {
+    padding: 15px 0;
+}
+
+.navbar-brand img {
+    width: 40px;
+    height: auto;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #333;
+}
+
+.event-section {
+    background-color: #fff;
+    padding: 30px 0;
+}
+
+.event-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.event-card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.event-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.guideline-section {
+    background-color: #fff;
+    padding: 50px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.guideline-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.guideline-section p {
+    text-align: center;
+    color: #6c757d;
+}
+
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 25px 0;
+    text-align: center;
+}
+
+.footer .row .col-md-4 {
+    text-align: left;
+}
+
+.footer .row .col-md-4 ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer .row .col-md-4 ul li {
+    padding: 5px 0;
+}
+
+.footer .row .col-md-4 ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer .row .col-md-4 ul li a:hover {
+    text-decoration: underline;
+}
+
+.login-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-box h4 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #333;
+    border-color: #333;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #555;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .navbar-brand img {
+        width: 30px;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+    }
+
+    .event-section {
+        padding: 20px 0;
+    }
+
+    .event-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .event-card img {
+        height: 150px;
+    }
+
+    .guideline-section {
+        padding: 30px 0;
+    }
+
+    .guideline-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .footer {
+        padding: 15px 0;
+    }
+
+    .footer .row .col-md-4 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .login-box {
+        padding: 20px;
+        max-width: 100%;
+        margin: 20px;
+    }
+
+    .login-box h4 {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .event-card img {
+        height: 120px;
+    }
+
+    .login-box {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+    }
+}
