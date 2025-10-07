@@ -1,6 +1,6 @@
 <?php
 define('ENCRYPTION_KEY', 'thisIsA32ByteLongSecretKey123456'); // exactly 32 chars!
-define('OFFICE_BASE_URL', (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) ? 'http://localhost/office.bugoportal.site' : 'https://office.bugoportal.site'); // no trailing slash
+define('OFFICE_BASE_URL', (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) ? 'http://localhost/BUGO-Admin' : 'https://office.bugoportal.site'); // no trailing slash
 // define('OFFICE_BASE_URL', 'https://office.bugoportal.site'); // no trailing slash
 /* =========
    Crypto
