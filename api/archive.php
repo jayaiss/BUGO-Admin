@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 0); // Hide errors from users
-ini_set('log_errors', 1);     // Log to server
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
@@ -16,6 +16,21 @@ require_once './logs/logs_trig.php';
 $trigger = new Trigger();
 
 /* =========================================
+   Session + Flash (client-side PRG)
+========================================= */
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+/**
+ * Store a flash message and mark that we should redirect on the client
+ * (avoids PHP header() after output started).
+ */
+function flash_success(string $msg, string $title='Success', string $icon='success'): void {
+    $_SESSION['flash'] = ['icon'=>$icon, 'title'=>$title, 'msg'=>$msg];
+    // Redirect target: same URL (GET), strip any fragment
+    $_SESSION['do_redirect'] = strtok($_SERVER['REQUEST_URI'], '#');
+}
+
+/* =========================================
    Helpers
 ========================================= */
 function count_records($table, $delete_status_column) {
@@ -25,58 +40,46 @@ function count_records($table, $delete_status_column) {
     return (int)($res ? $res->fetch_row()[0] : 0);
 }
 
-/** Windowed pagination renderer (First/Prev/…/Next/Last) */
 function render_pagination(int $total_items, int $limit, int $page, string $pageBase, string $qs): void {
     $total_pages = max(1, (int)ceil($total_items / $limit));
     $page = max(1, min($page, $total_pages));
-    $window = 2; // pages to show left/right of current
+    $window = 2;
     $start = max(1, $page - $window);
     $end   = min($total_pages, $page + $window);
 
     echo '<nav aria-label="Page navigation"><ul class="pagination justify-content-end">';
 
-    // First
     if ($page <= 1) {
-        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-double-left" aria-hidden="true"></i><span class="visually-hidden">First</span></span></li>';
+        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-double-left"></i><span class="visually-hidden">First</span></span></li>';
     } else {
-        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum=1" aria-label="First"><i class="fa fa-angle-double-left" aria-hidden="true"></i><span class="visually-hidden">First</span></a></li>';
+        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum=1" aria-label="First"><i class="fa fa-angle-double-left"></i><span class="visually-hidden">First</span></a></li>';
     }
 
-    // Previous
     if ($page <= 1) {
-        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-left" aria-hidden="true"></i><span class="visually-hidden">Previous</span></span></li>';
+        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-left"></i><span class="visually-hidden">Previous</span></span></li>';
     } else {
-        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.($page-1).'" aria-label="Previous"><i class="fa fa-angle-left" aria-hidden="true"></i><span class="visually-hidden">Previous</span></a></li>';
+        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.($page-1).'" aria-label="Previous"><i class="fa fa-angle-left"></i><span class="visually-hidden">Previous</span></a></li>';
     }
 
-    // Left ellipsis
-    if ($start > 1) {
-        echo '<li class="page-item disabled"><span class="page-link">…</span></li>';
-    }
+    if ($start > 1) echo '<li class="page-item disabled"><span class="page-link">…</span></li>';
 
-    // Windowed page numbers
     for ($i = $start; $i <= $end; $i++) {
         $active = ($i == $page) ? ' active' : '';
         echo '<li class="page-item'.$active.'"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.$i.'">'.$i.'</a></li>';
     }
 
-    // Right ellipsis
-    if ($end < $total_pages) {
-        echo '<li class="page-item disabled"><span class="page-link">…</span></li>';
+    if ($end < $total_pages) echo '<li class="page-item disabled"><span class="page-link">…</span></li>';
+
+    if ($page >= $total_pages) {
+        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-right"></i><span class="visually-hidden">Next</span></span></li>';
+    } else {
+        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.($page+1).'" aria-label="Next"><i class="fa fa-angle-right"></i><span class="visually-hidden">Next</span></a></li>';
     }
 
-    // Next
     if ($page >= $total_pages) {
-        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-right" aria-hidden="true"></i><span class="visually-hidden">Next</span></span></li>';
+        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-double-right"></i><span class="visually-hidden">Last</span></span></li>';
     } else {
-        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.($page+1).'" aria-label="Next"><i class="fa fa-angle-right" aria-hidden="true"></i><span class="visually-hidden">Next</span></a></li>';
-    }
-
-    // Last
-    if ($page >= $total_pages) {
-        echo '<li class="page-item disabled"><span class="page-link" aria-disabled="true"><i class="fa fa-angle-double-right" aria-hidden="true"></i><span class="visually-hidden">Last</span></span></li>';
-    } else {
-        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.$total_pages.'" aria-label="Last"><i class="fa fa-angle-double-right" aria-hidden="true"></i><span class="visually-hidden">Last</span></a></li>';
+        echo '<li class="page-item"><a class="page-link" href="'.$pageBase.$qs.'&pagenum='.$total_pages.'" aria-label="Last"><i class="fa fa-angle-double-right"></i><span class="visually-hidden">Last</span></a></li>';
     }
 
     echo '</ul></nav>';
@@ -249,6 +252,7 @@ function get_archived_feedback($search_term = '', $limit = 10, $page = 1) {
 
 /* =========================================
    Handle restore / delete POST actions
+   (store flash + mark for client redirect)
 ========================================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Residents
@@ -258,16 +262,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $resident_id);
         $stmt->execute();
         $trigger->isRestored(23, $resident_id, 20);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Resident restored successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Resident restored successfully!');
     } elseif (isset($_POST['delete_resident'])) {
         $resident_id = (int)$_POST['resident_id'];
         $stmt = $mysqli->prepare("DELETE FROM residents WHERE id = ?");
         $stmt->bind_param("i", $resident_id);
         $stmt->execute();
         $trigger->isDelete(23, $resident_id);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Resident deleted successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Resident deleted successfully!');
     }
 
     // Employees
@@ -277,16 +279,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $employee_id);
         $stmt->execute();
         $trigger->isRestored(24, $employee_id, 10);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Employee restored successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Employee restored successfully!');
     } elseif (isset($_POST['delete_employee'])) {
         $employee_id = (int)$_POST['employee_id'];
         $stmt = $mysqli->prepare("DELETE FROM employee_list WHERE employee_id = ?");
         $stmt->bind_param("i", $employee_id);
         $stmt->execute();
         $trigger->isDelete(24, $employee_id);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Employee deleted successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Employee deleted successfully!');
     }
 
     // Appointments
@@ -296,16 +296,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $appointment_id);
         $stmt->execute();
         $trigger->isRestored(25, $appointment_id, 30);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Appointment restored successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Appointment restored successfully!');
     } elseif (isset($_POST['delete_appointment'])) {
         $appointment_id = (int)$_POST['appointment_id'];
         $stmt = $mysqli->prepare("DELETE FROM schedules WHERE id = ?");
         $stmt->bind_param("i", $appointment_id);
         $stmt->execute();
         $trigger->isDelete(25, $appointment_id);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Appointment deleted successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Appointment deleted successfully!');
     }
 
     // Events
@@ -315,16 +313,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
         $trigger->isRestored(26, 0, 11);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Event restored successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Event restored successfully!');
     } elseif (isset($_POST['delete_event'])) {
         $event_id = (int)$_POST['id'];
         $stmt = $mysqli->prepare("DELETE FROM events WHERE id = ?");
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
         $trigger->isDelete(26, 0);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Event deleted successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Event deleted successfully!');
     }
 
     // Feedback
@@ -334,16 +330,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $feedback_id);
         $stmt->execute();
         $trigger->isRestored(27, $feedback_id, 20);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Feedback restored successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Feedback restored successfully!');
     } elseif (isset($_POST['delete_feedback'])) {
         $feedback_id = (int)$_POST['feedback_id'];
         $stmt = $mysqli->prepare("DELETE FROM feedback WHERE id = ?");
         $stmt->bind_param("i", $feedback_id);
         $stmt->execute();
         $trigger->isDelete(27, $feedback_id);
-        echo "<script>Swal.fire({icon:'success',title:'Success',text:'Feedback deleted successfully!'}).then(()=>{ location.reload(); });</script>";
-        exit;
+        flash_success('Feedback deleted successfully!');
     }
 }
 
@@ -352,10 +346,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ========================================= */
 $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 $page        = (isset($_GET['pagenum']) && is_numeric($_GET['pagenum'])) ? (int)$_GET['pagenum'] : 1;
-$limit       = 10; // show 10 per page
+$limit       = 10;
 $tab         = isset($_GET['tab']) ? $_GET['tab'] : 'residents';
 
-// Totals
 $total_residents = count_records('residents', 'resident_delete_status');
 $total_employees = count_records('employee_list', 'employee_delete_status');
 $total_appointments = (int)$mysqli->query("
@@ -368,7 +361,6 @@ $total_appointments = (int)$mysqli->query("
 $total_events = count_records('events', 'events_delete_status');
 $total_feedback = count_records('feedback', 'feedback_delete_status');
 
-// Data
 $archived_residents    = get_archived_residents($search_term, $limit, $page);
 $archived_employees    = get_archived_employees($search_term, $limit, $page);
 $archived_appointments = get_archived_appointments($search_term, $limit, $page);
@@ -379,80 +371,38 @@ $archived_feedback     = get_archived_feedback($search_term, $limit, $page);
 $baseUrl = isset($redirects['archive']) ? $redirects['archive'] : (basename($_SERVER['PHP_SELF']).'?page='.(isset($_GET['page'])?urlencode($_GET['page']):''));
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <style>
-       .nav-tabs .nav-link {
-  color: #339af0 !important;  /* Light soft blue for inactive tabs */
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
+<style>
+.nav-tabs .nav-link { color:#339af0!important;font-weight:500;transition:all .2s ease; }
+.nav-tabs .nav-link.active { background:#e7f5ff!important;color:#1c7ed6!important;border-color:#339af0 #339af0 #fff;font-weight:600; }
+.nav-tabs .nav-link:hover { color:#228be6!important; }
+.table { border:2px solid #f03e3e;border-radius:.5rem; }
+.table th { background:#343a40;color:#fff; }
+.table td,.table th { vertical-align:middle; }
+h2 { color:#228be6;font-weight:600; }
+</style>
 
-.nav-tabs .nav-link.active {
-  background-color: #e7f5ff !important;  /* Light blue background */
-  color: #1c7ed6 !important;  /* Slightly deeper blue text for active tab */
-  border-color: #339af0 #339af0 #fff;
-  font-weight: 600;
-}
-
-.nav-tabs .nav-link:hover {
-  color: #228be6 !important;  /* Slightly deeper blue on hover */
-}
-
-.table {
-  border: 2px solid #f03e3e;  /* Red border for the table (adjust or remove as needed) */
-  border-radius: 0.5rem;
-}
-
-.table th {
-  background-color: #343a40;
-  color: #fff;
-}
-
-.table td, .table th {
-  vertical-align: middle;
-}
-
-h2 {
-  color: #228be6;
-  font-weight: 600;
-}
-
-
-    </style>    
-
-      <link rel="stylesheet" href="css/styles.css">
-      <link rel="stylesheet" href="css/archive/archive.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/archive/archive.css">
 </head>
 <body class="archive-page">
 <div class="container mt-5">
   <h2 class="page-title">Archive</h2>
 
   <ul class="nav nav-tabs" id="archiveTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <?= ($tab=='residents')?'active':'' ?>" href="<?= $baseUrl ?>&tab=residents">Residents</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <?= ($tab=='employees')?'active':'' ?>" href="<?= $baseUrl ?>&tab=employees">Employees</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <?= ($tab=='appointments')?'active':'' ?>" href="<?= $baseUrl ?>&tab=appointments">Appointments</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <?= ($tab=='events')?'active':'' ?>" href="<?= $baseUrl ?>&tab=events">Events</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link <?= ($tab=='feedback')?'active':'' ?>" href="<?= $baseUrl ?>&tab=feedback">Feedback</a>
-    </li>
+    <li class="nav-item"><a class="nav-link <?= ($tab=='residents')?'active':'' ?>" href="<?= $baseUrl ?>&tab=residents">Residents</a></li>
+    <li class="nav-item"><a class="nav-link <?= ($tab=='employees')?'active':'' ?>" href="<?= $baseUrl ?>&tab=employees">Employees</a></li>
+    <li class="nav-item"><a class="nav-link <?= ($tab=='appointments')?'active':'' ?>" href="<?= $baseUrl ?>&tab=appointments">Appointments</a></li>
+    <li class="nav-item"><a class="nav-link <?= ($tab=='events')?'active':'' ?>" href="<?= $baseUrl ?>&tab=events">Events</a></li>
+    <li class="nav-item"><a class="nav-link <?= ($tab=='feedback')?'active':'' ?>" href="<?= $baseUrl ?>&tab=feedback">Feedback</a></li>
   </ul>
 
   <div class="tab-content mt-3" id="archiveTabContent">
@@ -464,7 +414,7 @@ h2 {
       <div class="table-responsive w-100" style="height:500px;overflow-y:auto;">
         <table class="table table-bordered w-100 mb-0" id="residentsTable">
           <thead>
-            <tr><th style="width: 300px;">ID</th><th style="width: 300px;">Full Name</th><th style="width: 300px;">Gender</th><th style="width: 300px;">Purok</th><th style="width: 300px;">Actions</th></tr>
+            <tr><th style="width:300px;">ID</th><th style="width:300px;">Full Name</th><th style="width:300px;">Gender</th><th style="width:300px;">Purok</th><th style="width:300px;">Actions</th></tr>
           </thead>
           <tbody>
           <?php if($archived_residents->num_rows>0): while($row=$archived_residents->fetch_assoc()): ?>
@@ -487,10 +437,7 @@ h2 {
           </tbody>
         </table>
       </div>
-      <?php
-        $qs='&tab=residents&search='.urlencode($search_term);
-        render_pagination($total_residents,$limit,$page,$baseUrl,$qs);
-      ?>
+      <?php $qs='&tab=residents&search='.urlencode($search_term); render_pagination($total_residents,$limit,$page,$baseUrl,$qs); ?>
     </div>
 
     <!-- Employees -->
@@ -501,7 +448,7 @@ h2 {
       <div class="table-responsive w-100" style="height:500px;overflow-y:auto;">
         <table class="table table-bordered w-100 mb-0" id="employeesTable">
           <thead>
-            <tr><th style="width: 300px;">ID</th><th style="width: 300px;">Full Name</th><th style="width: 300px;">Gender</th><th style="width: 300px;">Zone</th><th style="width: 300px;">Actions</th></tr>
+            <tr><th style="width:300px;">ID</th><th style="width:300px;">Full Name</th><th style="width:300px;">Gender</th><th style="width:300px;">Zone</th><th style="width:300px;">Actions</th></tr>
           </thead>
           <tbody>
           <?php if($archived_employees->num_rows>0): while($row=$archived_employees->fetch_assoc()): ?>
@@ -524,10 +471,7 @@ h2 {
           </tbody>
         </table>
       </div>
-      <?php
-        $qs='&tab=employees&search='.urlencode($search_term);
-        render_pagination($total_employees,$limit,$page,$baseUrl,$qs);
-      ?>
+      <?php $qs='&tab=employees&search='.urlencode($search_term); render_pagination($total_employees,$limit,$page,$baseUrl,$qs); ?>
     </div>
 
     <!-- Appointments -->
@@ -538,7 +482,7 @@ h2 {
       <div class="table-responsive w-100" style="height:500px;overflow-y:auto;">
         <table class="table table-bordered w-100 mb-0" id="appointmentsTable">
           <thead>
-            <tr><th>ID</th><th style="width: 250px;">Full Name</th><th>Certificate</th><th>Tracking Number</th><th>Date</th><th>Time Slot</th><th>Status</th><th style="width: 250px;">Actions</th></tr>
+            <tr><th>ID</th><th style="width:250px;">Full Name</th><th>Certificate</th><th>Tracking Number</th><th>Date</th><th>Time Slot</th><th>Status</th><th style="width:250px;">Actions</th></tr>
           </thead>
           <tbody>
           <?php if($archived_appointments->num_rows>0): while($row=$archived_appointments->fetch_assoc()): ?>
@@ -564,10 +508,7 @@ h2 {
           </tbody>
         </table>
       </div>
-      <?php
-        $qs='&tab=appointments&search='.urlencode($search_term);
-        render_pagination($total_appointments,$limit,$page,$baseUrl,$qs);
-      ?>
+      <?php $qs='&tab=appointments&search='.urlencode($search_term); render_pagination($total_appointments,$limit,$page,$baseUrl,$qs); ?>
     </div>
 
     <!-- Events -->
@@ -602,10 +543,7 @@ h2 {
           </tbody>
         </table>
       </div>
-      <?php
-        $qs='&tab=events&search='.urlencode($search_term);
-        render_pagination($total_events,$limit,$page,$baseUrl,$qs);
-      ?>
+      <?php $qs='&tab=events&search='.urlencode($search_term); render_pagination($total_events,$limit,$page,$baseUrl,$qs); ?>
     </div>
 
     <!-- Feedback -->
@@ -616,7 +554,7 @@ h2 {
       <div class="table-responsive w-100" style="height:500px;overflow-y:auto;">
         <table class="table table-bordered w-100 mb-0" id="feedbackTable">
           <thead>
-            <tr><th style="width: 150px;">ID</th><th style="width: 550px;">Feedback Text</th><th style="width: 250px;">Created At</th><th style="width: 250px;">Actions</th></tr>
+            <tr><th style="width:150px;">ID</th><th style="width:550px;">Feedback Text</th><th style="width:250px;">Created At</th><th style="width:250px;">Actions</th></tr>
           </thead>
           <tbody>
           <?php if($archived_feedback->num_rows>0): while($row=$archived_feedback->fetch_assoc()): ?>
@@ -638,70 +576,51 @@ h2 {
           </tbody>
         </table>
       </div>
-      <?php
-        $qs='&tab=feedback&search='.urlencode($search_term);
-        render_pagination($total_feedback,$limit,$page,$baseUrl,$qs);
-      ?>
+      <?php $qs='&tab=feedback&search='.urlencode($search_term); render_pagination($total_feedback,$limit,$page,$baseUrl,$qs); ?>
     </div>
   </div>
 </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        // Search functionality for each tab
-       $(document).ready(function () {
-    // Debounce utility
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
+<script>
+// Debounced client-side table search
+$(function () {
+    function debounce(fn, d) { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn.apply(this,a), d); }; }
     function bindDebouncedSearch(inputId, tableId) {
-        const input = $(`#${inputId}`);
-        const tableRows = $(`#${tableId} tbody tr`);
-
-        input.on('input', debounce(function () {
-            const searchTerm = input.val().toLowerCase();
-            tableRows.each(function () {
-                const rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.includes(searchTerm));
-            });
-        }, 1000)); // 300ms debounce
+        const input = $('#'+inputId), rows = $('#'+tableId+' tbody tr');
+        input.on('input', debounce(function(){
+            const q = input.val().toLowerCase();
+            rows.each(function(){ $(this).toggle($(this).text().toLowerCase().includes(q)); });
+        }, 600));
     }
-
-    bindDebouncedSearch('searchResidents', 'residentsTable');
-    bindDebouncedSearch('searchEmployees', 'employeesTable');
-    bindDebouncedSearch('searchAppointments', 'appointmentsTable');
-    bindDebouncedSearch('searchEvents', 'eventsTable');
-    bindDebouncedSearch('searchFeedback', 'feedbackTable');
+    bindDebouncedSearch('searchResidents','residentsTable');
+    bindDebouncedSearch('searchEmployees','employeesTable');
+    bindDebouncedSearch('searchAppointments','appointmentsTable');
+    bindDebouncedSearch('searchEvents','eventsTable');
+    bindDebouncedSearch('searchFeedback','feedbackTable');
 });
+
+// SweetAlert confirm wrappers
 document.addEventListener('DOMContentLoaded', function () {
     function bindSwalAction(selector, title, icon, confirmText, confirmColor) {
-        document.querySelectorAll(selector).forEach(button => {
-            button.addEventListener('click', () => {
-                const form = button.closest('form');
-                const message = button.dataset.message || 'Are you sure?';
+        document.querySelectorAll(selector).forEach(btn => {
+            btn.addEventListener('click', () => {
+                const form = btn.closest('form');
+                const message = btn.dataset.message || 'Are you sure?';
                 Swal.fire({
-                    title: title,
-                    text: message,
-                    icon: icon,
+                    title, text: message, icon,
                     showCancelButton: true,
                     confirmButtonColor: confirmColor,
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: confirmText
-                }).then(result => {
-                    if (result.isConfirmed) {
-                        // Ensure the clicked button's name is passed in POST
-                        const actionName = button.getAttribute('name');
-                        if (actionName) {
+                }).then(r => {
+                    if (r.isConfirmed) {
+                        const name = btn.getAttribute('name');
+                        if (name) {
                             const hidden = document.createElement('input');
-                            hidden.type = 'hidden';
-                            hidden.name = actionName;
-                            hidden.value = '1';
+                            hidden.type = 'hidden'; hidden.name = name; hidden.value = '1';
                             form.appendChild(hidden);
                         }
                         form.submit();
@@ -710,10 +629,31 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-
-    bindSwalAction('.swal-delete-btn', 'Confirm Deletion', 'warning', 'Yes, delete it!', '#d33');
-    bindSwalAction('.swal-restore-btn', 'Confirm Restore', 'question', 'Yes, restore it!', '#28a745');
+    bindSwalAction('.swal-delete-btn',  'Confirm Deletion', 'warning',  'Yes, delete it!',  '#d33');
+    bindSwalAction('.swal-restore-btn', 'Confirm Restore',  'question', 'Yes, restore it!', '#28a745');
 });
-    </script>
+</script>
+
+<?php
+// ORDER MATTERS!
+// If a redirect is pending, redirect first and KEEP the flash for the next GET.
+if (!empty($_SESSION['do_redirect'])): $redir = $_SESSION['do_redirect']; unset($_SESSION['do_redirect']); ?>
+<script>
+  window.location.replace(<?= json_encode($redir) ?>);
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0;url=<?= htmlspecialchars($redir, ENT_QUOTES) ?>">
+  <a href="<?= htmlspecialchars($redir, ENT_QUOTES) ?>">Continue</a>
+</noscript>
+<?php
+// Else, show the SweetAlert once on the GET and then consume the flash.
+elseif (!empty($_SESSION['flash'])): $f = $_SESSION['flash']; unset($_SESSION['flash']); ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  Swal.fire({ icon: '<?= $f['icon'] ?>', title: '<?= $f['title'] ?>', text: '<?= addslashes($f['msg']) ?>' });
+});
+</script>
+<?php endif; ?>
+
 </body>
 </html>

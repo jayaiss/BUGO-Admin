@@ -7,7 +7,7 @@ require '../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-session_start();
+// session_start();
 $user_role   = strtolower($_SESSION['Role_Name'] ?? '');
 $employee_id = intval($_SESSION['employee_id'] ?? 0);
 
