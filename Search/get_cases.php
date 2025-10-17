@@ -29,7 +29,7 @@ if ($res_id <= 0) {
 // backticks for table/columns; CASES can be awkward in some environments
 $sql = "SELECT `case_number`, `nature_offense`, `date_filed`, `action_taken`
         FROM `cases`
-        WHERE `id` = ?
+        WHERE `res_id` = ?
         ORDER BY `date_filed` DESC";
 
 $stmt = $mysqli->prepare($sql);

@@ -59,15 +59,40 @@ include 'class/session_timeout.php';
             </div>
           </div>
 
-          <!-- Contact / Email -->
+          <!-- Contact / Email / Username -->
           <div class="row gy-3 mt-1">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="editContactNumber" class="form-label">Contact Number</label>
               <input type="text" class="form-control" id="editContactNumber" name="contact_number" inputmode="numeric" pattern="[0-9]{10,12}" required>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="editEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="editEmail" name="email" required>
+              <input type="email" class="form-control" id="editEmail" name="email">
+              <div class="form-text">Optional. Leave blank to remove.</div>
+            </div>
+            <div class="col-md-4">
+              <label for="editUsername" class="form-label">Username</label>
+              <input type="text" class="form-control" id="editUsername" name="username" required>
+              <div class="invalid-feedback">Username is required.</div>
+            </div>
+          </div>
+
+          <!-- Password (optional change) -->
+          <div class="row gy-3 mt-1">
+            <div class="col-md-6">
+              <label for="editPassword" class="form-label">New Password <small class="text-muted">(optional)</small></label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="editPassword" name="new_password" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep current password">
+                <button class="btn btn-outline-secondary" type="button" id="btnTogglePwd"><i class="fa-regular fa-eye"></i></button>
+                <button class="btn btn-outline-secondary" type="button" id="btnGenPwd"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+              </div>
+              <div class="form-text">Min 8 characters.</div>
+              <div class="invalid-feedback" id="pwdFeedback"></div>
+            </div>
+            <div class="col-md-6">
+              <label for="editPasswordConfirm" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="editPasswordConfirm" name="confirm_password" minlength="8" autocomplete="new-password" placeholder="Repeat new password">
+              <div class="invalid-feedback" id="cpwdFeedback"></div>
             </div>
           </div>
 
@@ -176,6 +201,7 @@ $('#editModal').on('show.bs.modal', function (event) {
   $('#editGender').val(button.data('gender'));
   $('#editContactNumber').val(button.data('contact'));
   $('#editEmail').val(button.data('email'));
+  $('#editUsername').val(button.data('username')); // NEW
   $('#editCivilStatus').val(button.data('civilstatus'));
 
   $('#editBirthDate').val(button.data('birthdate'));
@@ -228,6 +254,42 @@ function validateEditResidencyStart(el){
   clearInvalid(el); return true;
 }
 
+// Password validators
+function validatePasswords(){
+  const pwd = document.getElementById('editPassword');
+  const cpw = document.getElementById('editPasswordConfirm');
+  const pf  = document.getElementById('pwdFeedback');
+  const cpf = document.getElementById('cpwdFeedback');
+
+  if(!pwd || !cpw) return true;
+
+  // no change case
+  if (!pwd.value && !cpw.value) {
+    pwd.classList.remove('is-invalid'); cpw.classList.remove('is-invalid');
+    pwd.setCustomValidity(''); cpw.setCustomValidity('');
+    return true;
+  }
+  if (pwd.value.length < 8) {
+    pwd.classList.add('is-invalid');
+    if (pf) pf.textContent = 'Password must be at least 8 characters.';
+    pwd.setCustomValidity('Too short');
+    return false;
+  } else {
+    pwd.classList.remove('is-invalid');
+    pwd.setCustomValidity('');
+  }
+  if (pwd.value !== cpw.value) {
+    cpw.classList.add('is-invalid');
+    if (cpf) cpf.textContent = 'Passwords do not match.';
+    cpw.setCustomValidity('Mismatch');
+    return false;
+  } else {
+    cpw.classList.remove('is-invalid');
+    cpw.setCustomValidity('');
+  }
+  return true;
+}
+
 // Attach events
 document.addEventListener('DOMContentLoaded', ()=>{
   const bd=document.getElementById('editBirthDate');
@@ -241,12 +303,53 @@ document.addEventListener('DOMContentLoaded', ()=>{
     ['input','change','blur'].forEach(ev=>rs.addEventListener(ev,()=>validateEditResidencyStart(rs)));
   }
 
+  const pwd=document.getElementById('editPassword');
+  const cpw=document.getElementById('editPasswordConfirm');
+  if(pwd) ['input','blur','change'].forEach(ev=>pwd.addEventListener(ev, validatePasswords));
+  if(cpw) ['input','blur','change'].forEach(ev=>cpw.addEventListener(ev, validatePasswords));
+
+  // Username required
+  const uname=document.getElementById('editUsername');
+
+  // Show/hide & generate password buttons
+  const btnSee=document.getElementById('btnTogglePwd');
+  const btnGen=document.getElementById('btnGenPwd');
+  function genPass(len=12){
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*';
+    let out=''; for(let i=0;i<len;i++) out+=chars[Math.floor(Math.random()*chars.length)];
+    return out;
+  }
+  if(btnSee){
+    btnSee.addEventListener('click', ()=>{
+      const t = (pwd.getAttribute('type')==='password') ? 'text' : 'password';
+      pwd.setAttribute('type', t);
+      cpw.setAttribute('type', t);
+    });
+  }
+  if(btnGen){
+    btnGen.addEventListener('click', ()=>{
+      const v = genPass();
+      pwd.value = v; cpw.value = v;
+      validatePasswords();
+    });
+  }
+
   const form=document.getElementById('editForm');
   if(form){
     form.addEventListener('submit',(e)=>{
       let ok=true;
       if(bd) ok=validateEditBirthDate(bd) && ok;
       if(rs) ok=validateEditResidencyStart(rs) && ok;
+
+      if(uname && !uname.value.trim()){
+        e.preventDefault();
+        uname.classList.add('is-invalid');
+        uname.focus();
+        return;
+      }
+
+      if(!validatePasswords()) ok=false;
+
       if(!ok || !form.checkValidity()){
         e.preventDefault();
         (form.querySelector(':invalid')||form.querySelector('.is-invalid'))?.focus();

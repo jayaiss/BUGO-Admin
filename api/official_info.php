@@ -199,29 +199,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['roleName'])) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* EDIT EMPLOYEE (with optional password change + email)                      */
+/* EDIT EMPLOYEE (username + optional password change + email + e-signature)  */
 /* ─────────────────────────────────────────────────────────────────────────── */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (($_POST['action_type'] ?? '') === 'edit')) {
 
     // Sanitize POST data
-    $employeeId    = sanitize_input($_POST['employee_id'] ?? '');
-    $firstName     = sanitize_input($_POST['edit_first_name'] ?? '');
-    $middleName    = sanitize_input($_POST['edit_middle_name'] ?? '');
-    $lastName      = sanitize_input($_POST['edit_last_name'] ?? '');
-    $birthDate     = sanitize_input($_POST['edit_birth_date'] ?? '');
-    $birthPlace    = sanitize_input($_POST['edit_birth_place'] ?? '');
-    $gender        = sanitize_input($_POST['edit_gender'] ?? '');
+    $employeeId    = (int)($_POST['employee_id'] ?? 0);
+    $firstName     = sanitize_input($_POST['edit_first_name']     ?? '');
+    $middleName    = sanitize_input($_POST['edit_middle_name']    ?? '');
+    $lastName      = sanitize_input($_POST['edit_last_name']      ?? '');
+    $birthDate     = sanitize_input($_POST['edit_birth_date']     ?? '');
+    $birthPlace    = sanitize_input($_POST['edit_birth_place']    ?? '');
+    $gender        = sanitize_input($_POST['edit_gender']         ?? '');
     $contactNumber = sanitize_input($_POST['edit_contact_number'] ?? '');
-    $civilStatus   = sanitize_input($_POST['edit_civil_status'] ?? '');
-    $email         = sanitize_input($_POST['edit_email'] ?? '');
-    $zone          = sanitize_input($_POST['edit_zone'] ?? '');
-    $citizenship   = sanitize_input($_POST['edit_citizenship'] ?? '');
-    $religion      = sanitize_input($_POST['edit_religion'] ?? '');
-    $term          = sanitize_input($_POST['edit_term'] ?? '');
-    $newPassword   = $_POST['edit_password'] ?? ''; // OPTIONAL
+    $civilStatus   = sanitize_input($_POST['edit_civil_status']   ?? '');
+    $email         = sanitize_input($_POST['edit_email']          ?? '');
+    $zone          = sanitize_input($_POST['edit_zone']           ?? '');
+    $citizenship   = sanitize_input($_POST['edit_citizenship']    ?? '');
+    $religion      = sanitize_input($_POST['edit_religion']       ?? '');
+    $term          = sanitize_input($_POST['edit_term']           ?? '');
 
-    // Fetch oldData now that we have $employeeId (for audit trail)
-    $oldStmt = $mysqli->prepare("SELECT * FROM employee_list WHERE employee_id = ?");
+    // NEW: account fields
+    $username      = sanitize_input($_POST['edit_username']       ?? '');       // required
+    $newPassword   = (string)($_POST['edit_new_password']         ?? '');       // optional
+
+    // Fetch oldData now (for audit trail + fallback email/username)
+    $oldStmt = $mysqli->prepare("SELECT employee_email, employee_username FROM employee_list WHERE employee_id = ?");
     $oldStmt->bind_param("i", $employeeId);
     $oldStmt->execute();
     $oldResult = $oldStmt->get_result();
@@ -229,14 +232,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (($_POST['action_type'] ?? '') === 
     $oldStmt->close();
 
     // Basic validations
-    if (empty($firstName) || empty($lastName) || empty($birthDate)) {
-        echo "<script>Swal.fire({icon:'warning',title:'Missing Fields',text:'All required fields must be filled out.'});</script>";
+    if ($employeeId <= 0 || $firstName === '' || $lastName === '' || $birthDate === '' || $username === '') {
+        echo "<script>Swal.fire({icon:'warning',title:'Missing Fields',text:'First name, last name, birth date, and username are required.'});</script>";
         exit;
     }
-if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo "<script>Swal.fire({icon:'error',title:'Invalid Email',text:'Please enter a valid email address.'});</script>";
-    exit;
-}
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>Swal.fire({icon:'error',title:'Invalid Email',text:'Please enter a valid email address.'});</script>";
+        exit;
+    }
     if (!preg_match('/^\d{10,15}$/', $contactNumber)) {
         echo "<script>Swal.fire({icon:'error',title:'Invalid Contact',text:'Contact number must be 10–15 digits.'});</script>";
         exit;
@@ -245,14 +248,19 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>Swal.fire({icon:'error',title:'Invalid Date Format',text:'Birth date format must be YYYY-MM-DD.'});</script>";
         exit;
     }
+    if ($newPassword !== '' && strlen($newPassword) < 8) {
+        echo "<script>Swal.fire({icon:'error',title:'Weak Password',text:'New password must be at least 8 characters.'});</script>";
+        exit;
+    }
 
     // Start dynamic SQL (base fields)
     $params = [
         $firstName, $middleName, $lastName, $birthDate, $birthPlace,
         $gender, $contactNumber, $civilStatus, $email, $zone,
-        $citizenship, $religion, $term
+        $citizenship, $religion, $term,
+        $username // NEW: always update username
     ];
-    $types  = "sssssssssssss"; // 13 strings
+    $types  = "sssssssssssss" . "s"; // 13 strings + username
 
     $sql = "UPDATE employee_list SET 
                 employee_fname = ?, 
@@ -267,10 +275,11 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 employee_zone = ?, 
                 employee_citizenship = ?, 
                 employee_religion = ?, 
-                employee_term = ?";
+                employee_term = ?,
+                employee_username = ?";
 
     // Optional password update
-    if (!empty($newPassword)) {
+    if ($newPassword !== '') {
         $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
         $sql     .= ", employee_password = ?";
         $params[] = $hashed;
@@ -338,12 +347,6 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     }
     /* ---------------------------------------------------------------------------------------- */
 
-    // Keep username in sync with email (like your Add flow)
-    // $employee_username = strtolower($email);
-    // $sql   .= ", employee_username = ?";
-    // $params[] = $employee_username;
-    // $types   .= "s";
-
     // WHERE
     $sql .= " WHERE employee_id = ?";
     $params[] = $employeeId;
@@ -372,8 +375,13 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         }
 
         if ($stmt->execute()) {
-            if (!empty($newPassword)) {
-                sendCredentials($email, $employee_username, $newPassword);
+            // If password changed, email credentials to best address
+            if ($newPassword !== '') {
+                $targetEmail = ($email !== '') ? $email : ($oldData['employee_email'] ?? '');
+                $targetUser  = ($username !== '') ? $username : ($oldData['employee_username'] ?? '');
+                if ($targetEmail !== '' && filter_var($targetEmail, FILTER_VALIDATE_EMAIL)) {
+                    @sendCredentials($targetEmail, $targetUser, $newPassword);
+                }
             }
 
             echo "<script>
@@ -392,6 +400,7 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>Swal.fire({icon:'error',title:'Error!',text:'Something went wrong preparing the SQL statement.',confirmButtonColor:'#d33'});</script>";
     }
 }
+
 
 
 /* ─────────────────────────────────────────────────────────────────────────── */

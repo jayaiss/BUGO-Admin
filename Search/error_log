@@ -911,3 +911,39 @@ Stack trace:
 [06-Oct-2025 21:13:40 UTC] PHP Warning:  Undefined array key "res_id" in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/components/appointment_row.php on line 99
 [06-Oct-2025 21:13:40 UTC] PHP Warning:  Undefined array key "res_id" in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/components/appointment_row.php on line 93
 [06-Oct-2025 21:13:40 UTC] PHP Warning:  Undefined array key "res_id" in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/components/appointment_row.php on line 99
+[10-Oct-2025 10:00:20 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[10-Oct-2025 10:00:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[10-Oct-2025 10:00:32 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/logs/logs_trig.php on line 14) in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/approve_captain.php on line 10
+[11-Oct-2025 01:39:13 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[11-Oct-2025 01:39:23 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[11-Oct-2025 01:39:31 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[11-Oct-2025 03:45:45 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35
+[11-Oct-2025 03:55:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'res_id' in 'WHERE' in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php:35
+Stack trace:
+#0 /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php(35): mysqli->prepare()
+#1 {main}
+  thrown in /home/hzvl0mk3xdsn/public_html/office.bugoportal.site/Search/get_cases.php on line 35

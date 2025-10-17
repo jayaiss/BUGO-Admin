@@ -57,7 +57,7 @@ include 'class/session_timeout.php';
               </div>
 
               <div class="col-md-6">
-                <label for="editBirthPlace" class="form-label">Birth Place</label>
+                <label for="editBirthPlace" class="form-label">Birth Place <span class="text-danger">*</span></label>
                 <input type="text" id="editBirthPlace" name="edit_birth_place" class="form-control" required>
                 <div class="invalid-feedback">Birth place is required.</div>
               </div>
@@ -98,7 +98,7 @@ include 'class/session_timeout.php';
             </div>
           </div>
 
-          <!-- SECTION: Contact & Zone -->
+          <!-- SECTION: Email & Zone -->
           <div class="p-3 border rounded-3 mb-3 bg-white">
             <div class="d-flex align-items-center gap-2 mb-3">
               <i class="fa-solid fa-envelope"></i>
@@ -121,7 +121,7 @@ include 'class/session_timeout.php';
             </div>
           </div>
 
-          <!-- SECTION: Other -->
+          <!-- SECTION: Other Details -->
           <div class="p-3 border rounded-3 mb-3 bg-white">
             <div class="d-flex align-items-center gap-2 mb-3">
               <i class="fa-solid fa-passport"></i>
@@ -129,12 +129,12 @@ include 'class/session_timeout.php';
             </div>
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="editCitizenship" class="form-label">Citizenship</label>
+                <label for="editCitizenship" class="form-label">Citizenship <span class="text-danger">*</span></label>
                 <input type="text" id="editCitizenship" name="edit_citizenship" class="form-control" required>
                 <div class="invalid-feedback">Citizenship is required.</div>
               </div>
               <div class="col-md-6">
-                <label for="editReligion" class="form-label">Religion</label>
+                <label for="editReligion" class="form-label">Religion <span class="text-danger">*</span></label>
                 <input type="text" id="editReligion" name="edit_religion" class="form-control" required>
                 <div class="invalid-feedback">Religion is required.</div>
               </div>
@@ -142,6 +142,36 @@ include 'class/session_timeout.php';
                 <label for="editTerm" class="form-label">Employee Term <span class="text-danger">*</span></label>
                 <input type="text" id="editTerm" name="edit_term" class="form-control" required>
                 <div class="invalid-feedback">Term is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION: Account Login (Username + New Password) -->
+          <div class="p-3 border rounded-3 mb-3 bg-white">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="fa-solid fa-user-shield"></i>
+              <h6 class="m-0 fw-bold">Account Login</h6>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="editUsername" class="form-label">Username <span class="text-danger">*</span></label>
+                <input type="text" id="editUsername" name="edit_username" class="form-control" required minlength="4" maxlength="255" autocomplete="username">
+                <div class="invalid-feedback">Username is required (min 4 chars).</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="editPassword" class="form-label">New Password</label>
+                <div class="input-group">
+                  <input type="password" id="editPassword" name="edit_new_password" class="form-control" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep current">
+                  <button class="btn btn-outline-secondary" type="button" id="togglePwd"><i class="fa-regular fa-eye"></i></button>
+                </div>
+                <div class="form-text">Leave blank if you don’t want to change it.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="editConfirmPassword" class="form-label">Confirm New Password</label>
+                <input type="password" id="editConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Repeat new password">
+                <div class="invalid-feedback">Passwords must match.</div>
               </div>
             </div>
           </div>
@@ -212,6 +242,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const editReligion     = document.getElementById('editReligion');
   const editTerm         = document.getElementById('editTerm');
 
+  // Account fields
+  const editUsername     = document.getElementById('editUsername');
+  const editPassword     = document.getElementById('editPassword');
+  const editConfirmPwd   = document.getElementById('editConfirmPassword');
+  const togglePwdBtn     = document.getElementById('togglePwd');
+
   const emailFeedbackEl  = document.getElementById('editEmailFeedback');
 
   // E-signature elements
@@ -237,6 +273,11 @@ document.addEventListener('DOMContentLoaded', function () {
     editReligion.value     = button.getAttribute('data-religion') || '';
     editTerm.value         = button.getAttribute('data-term') || '';
 
+    // Username (from data-username on edit button)
+    editUsername.value     = button.getAttribute('data-username') || '';
+    editPassword.value     = '';
+    editConfirmPwd.value   = '';
+
     // Signature preview
     const hasEsig = (button.getAttribute('data-has-esig') === '1');
     const empId   = button.getAttribute('data-id');
@@ -252,6 +293,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Clear email feedback
     emailFeedbackEl.textContent = '';
+    emailFeedbackEl.classList.remove('text-danger');
+    emailFeedbackEl.classList.add('text-muted');
   });
 
   // Email validation (basic format check + live message)
@@ -290,6 +333,34 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.readAsDataURL(f);
   });
 
+  // Password show/hide
+  togglePwdBtn.addEventListener('click', () => {
+    const isPwd = editPassword.type === 'password';
+    editPassword.type   = isPwd ? 'text' : 'password';
+    editConfirmPwd.type = isPwd ? 'text' : 'password';
+  });
+
+  // Password validation — only if user enters something
+  function passwordsOk() {
+    const p  = (editPassword.value || '').trim();
+    const cp = (editConfirmPwd.value || '').trim();
+    if (!p && !cp) { // nothing to change
+      editPassword.setCustomValidity('');
+      editConfirmPwd.setCustomValidity('');
+      return true;
+    }
+    if (p.length && p.length < 8) {
+      editPassword.setCustomValidity('Password must be at least 8 characters.');
+      return false;
+    }
+    editPassword.setCustomValidity('');
+    const match = p === cp;
+    editConfirmPwd.setCustomValidity(match ? '' : 'Passwords do not match');
+    return match;
+  }
+  editPassword.addEventListener('input', passwordsOk);
+  editConfirmPwd.addEventListener('input', passwordsOk);
+
   // Bootstrap validation + SweetAlert confirmation
   form.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -298,9 +369,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!form.checkValidity()) {
       event.stopPropagation();
       form.classList.add('was-validated');
-      // focus first invalid
       const firstInvalid = form.querySelector(':invalid');
       if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    // Password pair check
+    if (!passwordsOk()) {
+      form.classList.add('was-validated');
+      editConfirmPwd.focus();
       return;
     }
 

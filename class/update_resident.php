@@ -1,5 +1,5 @@
 <?php
-// class/update_resident.php — update primary + add children (email OR username)
+// class/update_resident.php — update primary + add children (email OR username) + EDIT username/password
 
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -247,7 +247,10 @@ $suffix_name      = sanitize_input($_POST['suffix_name'] ?? '');
 $gender           = sanitize_input($_POST['gender'] ?? '');
 $zone             = sanitize_input($_POST['zone'] ?? '');
 $contact_number   = sanitize_input($_POST['contact_number'] ?? '');
-$email            = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+$email_raw        = $_POST['email'] ?? '';
+$email            = filter_var($email_raw, FILTER_SANITIZE_EMAIL);
+$username         = strtolower(sanitize_input($_POST['username'] ?? '')); // NEW
+
 $civil_status     = sanitize_input($_POST['civilStatus'] ?? '');
 $birth_date       = sanitize_input($_POST['birth_date'] ?? '');
 $residency_start  = sanitize_input($_POST['residency_start'] ?? '');
@@ -264,6 +267,10 @@ $res_province     = sanitize_input($_POST['province'] ?? '');
 $res_city         = sanitize_input($_POST['city_municipality'] ?? '');
 $res_barangay     = sanitize_input($_POST['barangay'] ?? '');
 
+// Password change (optional)
+$new_password     = trim((string)($_POST['new_password'] ?? ''));
+$confirm_password = trim((string)($_POST['confirm_password'] ?? ''));
+
 /* ---------------- Fetch old for audit ---------------- */
 
 $oldStmt = $mysqli->prepare("SELECT * FROM residents WHERE id = ?");
@@ -274,11 +281,19 @@ $oldStmt->close();
 
 /* ---------------- Basic validations ---------------- */
 
-// Require a valid email for the primary edit (per current UI)
-if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    page_msg_and_exit('error', 'Invalid Email', 'Please enter a valid email address.');
+// Username required
+if ($username === '') {
+    page_msg_and_exit('error', 'Missing Username', 'Username is required.');
 }
-if (strlen($email) > 191) {
+
+// Email is optional on EDIT; if blank, store as NULL
+$email_for_db = ($email === '') ? null : $email;
+
+// If provided, email must be valid format
+if (!is_null($email_for_db) && !filter_var($email_for_db, FILTER_VALIDATE_EMAIL)) {
+    page_msg_and_exit('error', 'Invalid Email', 'Please enter a valid email address or leave it blank to remove.');
+}
+if (!is_null($email_for_db) && strlen($email_for_db) > 191) {
     page_msg_and_exit('error', 'Email Too Long', 'Email must be 191 characters or fewer.');
 }
 
@@ -287,17 +302,29 @@ if ($first_name === '' || $last_name === '') {
     page_msg_and_exit('error', 'Missing Name', 'First name and last name are required.');
 }
 
-// Uniqueness for primary email (active only)
-$dupStmt = $mysqli->prepare(
-    'SELECT 1 FROM residents WHERE email = ? AND id <> ? AND resident_delete_status = 0 LIMIT 1'
-);
-$dupStmt->bind_param('si', $email, $id);
-$dupStmt->execute();
-$exists = $dupStmt->get_result()->fetch_column();
-$dupStmt->close();
+// Username uniqueness (active only), excluding this record
+$chk = $mysqli->prepare('SELECT id FROM residents WHERE username = ? AND id <> ? AND resident_delete_status = 0 LIMIT 1');
+$chk->bind_param('si', $username, $id);
+$chk->execute();
+if ($chk->get_result()->fetch_assoc()) {
+    $chk->close();
+    page_msg_and_exit('error', 'Duplicate Username', 'That username is already taken by another active resident.');
+}
+$chk->close();
 
-if ($exists) {
-    page_msg_and_exit('error', 'Email already in use', 'Please use a different email address.');
+// Email uniqueness when provided (active only), excluding this record
+if (!is_null($email_for_db)) {
+    $dupStmt = $mysqli->prepare(
+        'SELECT 1 FROM residents WHERE email = ? AND id <> ? AND resident_delete_status = 0 LIMIT 1'
+    );
+    $dupStmt->bind_param('si', $email_for_db, $id);
+    $dupStmt->execute();
+    $exists = $dupStmt->get_result()->fetch_column();
+    $dupStmt->close();
+
+    if ($exists) {
+        page_msg_and_exit('error', 'Email already in use', 'Please use a different email address.');
+    }
 }
 
 /* ---------------- NEW: duplicate FULL-NAME validation for EDIT children ---------------- */
@@ -332,11 +359,11 @@ if (is_array($efn) || is_array($eln) || is_array($emn) || is_array($esf)) {
 try {
     $mysqli->begin_transaction();
 
-    // 1) Update primary (now including suffix_name)
+    // 1) Update primary (now including username + suffix_name)
     $stmt = $mysqli->prepare(
         "UPDATE residents 
          SET first_name = ?, middle_name = ?, last_name = ?, suffix_name = ?, gender = ?, 
-             res_zone = ?, contact_number = ?, email = ?, civil_status = ?, 
+             res_zone = ?, contact_number = ?, email = ?, username = ?, civil_status = ?, 
              birth_date = ?, residency_start = ?, age = ?, birth_place = ?, res_street_address = ?, 
              citizenship = ?, religion = ?, occupation = ?,
              zone_leader_id = ?, res_province = ?, res_city_municipality = ?, res_barangay = ?
@@ -344,17 +371,17 @@ try {
     );
 
     /* Types:
-       1-11  = s (up to residency_start)
-       12    = i (age)
-       13-17 = sssss
-       18    = i (zone_leader_id)
-       19-21 = sss (province/city/barangay as strings here)
-       22    = i (id)
+       1-12  = s (up to residency_start)
+       13    = i (age)
+       14-18 = sssss
+       19    = i (zone_leader_id)
+       20-22 = sss (province/city/barangay as strings here)
+       23    = i (id)
     */
     $stmt->bind_param(
-        "sssssssssssisssssisssi",
+        "ssssssssssssisssssisssi",
         $first_name, $middle_name, $last_name, $suffix_name, $gender,
-        $zone, $contact_number, $email, $civil_status,
+        $zone, $contact_number, $email_for_db, $username, $civil_status,
         $birth_date, $residency_start, $age, $birth_place, $street_address,
         $citizenship, $religion, $occupation,
         $zone_leader_id, $res_province, $res_city, $res_barangay,
@@ -362,6 +389,21 @@ try {
     );
     $stmt->execute();
     $stmt->close();
+
+    // 1b) Optional password change (only if fields present)
+    if ($new_password !== '' || $confirm_password !== '') {
+        if (strlen($new_password) < 8) {
+            throw new Exception('New password must be at least 8 characters.');
+        }
+        if ($new_password !== $confirm_password) {
+            throw new Exception('New password and confirm password do not match.');
+        }
+        $hash = password_hash($new_password, PASSWORD_DEFAULT);
+        $p = $mysqli->prepare("UPDATE residents SET password = ? WHERE id = ? AND resident_delete_status = 0");
+        $p->bind_param('si', $hash, $id);
+        $p->execute();
+        $p->close();
+    }
 
     // 2) Insert NEW children coming from Edit modal (if any)
     // Expect arrays produced by generateFamilyMemberFields('edit_family')

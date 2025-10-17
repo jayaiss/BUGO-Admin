@@ -59,8 +59,8 @@ if ($stmt) {
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
-    $employeeId   = $user['employee_id'] ?? null;
-    $employeeEmail = trim($user['employee_email'] ?? '');
+    $employeeId     = $user['employee_id'] ?? null;
+    $employeeEmail  = trim($user['employee_email'] ?? '');
     $stmt->close();
 }
 
@@ -70,57 +70,58 @@ if (!$user) {
 }
 
 /* ---------------------------------------------
-   Email check (for 2FA)
+   Email check (for 2FA decision)
 ---------------------------------------------- */
-$canSend2FA = (bool) filter_var($employeeEmail, FILTER_VALIDATE_EMAIL);
-$emailWarning = $canSend2FA ? null : 'No valid email is saved for your account. Add an email address first so we can send your 2FA code.';
+$canSend2FA   = (bool) filter_var($employeeEmail, FILTER_VALIDATE_EMAIL);
+$emailWarning = $canSend2FA
+    ? null
+    : 'No valid email is saved for your account. We will change your password immediately without 2FA.';
 
 /* ---------------------------------------------
    Handle password update
 ---------------------------------------------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_password'])) {
 
-    // Block immediately if no email available for 2FA
-    if (!$canSend2FA) {
-        $error = "We can't proceed because your account has no valid email on file for 2FA.";
+    $currentPassword = $_POST['current_password'] ?? '';
+    $newPassword     = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // Basic form checks
+    if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+        $error = "All fields are required.";
+    } elseif (!password_verify($currentPassword, $user['employee_password'])) {
+        $error = "Your current password is incorrect.";
+    } elseif ($newPassword !== $confirmPassword) {
+        $error = "New password and confirmation do not match.";
+    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $newPassword)) {
+        $error = "Password must be at least 8 characters, contain an uppercase letter, lowercase letter, and a number.";
     } else {
-        $currentPassword = $_POST['current_password'] ?? '';
-        $newPassword     = $_POST['new_password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
-
-        if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
-            $error = "All fields are required.";
-        } elseif (!password_verify($currentPassword, $user['employee_password'])) {
-            $error = "Your current password is incorrect.";
-        } elseif ($newPassword !== $confirmPassword) {
-            $error = "New password and confirmation do not match.";
-        } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $newPassword)) {
-            $error = "Password must be at least 8 characters, contain an uppercase letter, lowercase letter, and a number.";
-        } else {
-            // Check password history
-            $isUsedBefore = false;
-            if ($employeeId) {
-                $historyStmt = $mysqli->prepare("SELECT old_password FROM emp_password_history WHERE employee_id = ?");
-                if ($historyStmt) {
-                    $historyStmt->bind_param("i", $employeeId);
-                    $historyStmt->execute();
-                    $historyResult = $historyStmt->get_result();
-                    while ($row = $historyResult->fetch_assoc()) {
-                        if (password_verify($newPassword, $row['old_password'])) {
-                            $isUsedBefore = true;
-                            break;
-                        }
+        // Check password history (disallow reuse)
+        $isUsedBefore = false;
+        if ($employeeId) {
+            $historyStmt = $mysqli->prepare("SELECT old_password FROM emp_password_history WHERE employee_id = ?");
+            if ($historyStmt) {
+                $historyStmt->bind_param("i", $employeeId);
+                $historyStmt->execute();
+                $historyResult = $historyStmt->get_result();
+                while ($row = $historyResult->fetch_assoc()) {
+                    if (password_verify($newPassword, $row['old_password'])) {
+                        $isUsedBefore = true;
+                        break;
                     }
-                    $historyStmt->close();
                 }
+                $historyStmt->close();
             }
+        }
 
-            if ($isUsedBefore) {
-                $error = "This password was used before. Choose a new one.";
-            } elseif (password_verify($newPassword, $user['employee_password'])) {
-                $error = "New password cannot be the same as your current password.";
-            } else {
-                // ✅ Save 2FA session data and redirect using absolute URL
+        if ($isUsedBefore) {
+            $error = "This password was used before. Choose a new one.";
+        } elseif (password_verify($newPassword, $user['employee_password'])) {
+            $error = "New password cannot be the same as your current password.";
+        } else {
+            // Branch by 2FA availability:
+            if ($canSend2FA) {
+                // ✅ With email: 2FA path unchanged
                 $_SESSION['new_hashed_password'] = password_hash($newPassword, PASSWORD_DEFAULT);
                 $_SESSION['employee_id']         = $employeeId;
                 $_SESSION['2fa_code']            = 'BUGO-' . mt_rand(100000, 999999);
@@ -140,6 +141,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_password'])) {
   setTimeout(() => { window.location.href = " . json_encode($send2faUrl) . "; }, 800);
 </script>";
                 exit();
+
+            } else {
+                // 🚀 No email: BYPASS 2FA → change password immediately
+
+                $mysqli->begin_transaction();
+
+                try {
+                    // 1) Record old password into history
+                    if ($employeeId) {
+                        $insHist = $mysqli->prepare("INSERT INTO emp_password_history (employee_id, old_password) VALUES (?, ?)");
+                        if (!$insHist) {
+                            throw new RuntimeException("Could not prepare history insert.");
+                        }
+                        $oldHash = $user['employee_password'];
+                        $insHist->bind_param("is", $employeeId, $oldHash);
+                        if (!$insHist->execute()) {
+                            throw new RuntimeException("Could not write password history.");
+                        }
+                        $insHist->close();
+                    }
+
+                    // 2) Update to new password
+                    $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $upd = $mysqli->prepare("UPDATE employee_list SET employee_password = ? WHERE employee_id = ?");
+                    if (!$upd) {
+                        throw new RuntimeException("Could not prepare password update.");
+                    }
+                    $upd->bind_param("si", $newHash, $employeeId);
+                    if (!$upd->execute() || $upd->affected_rows < 0) {
+                        throw new RuntimeException("Could not update your password.");
+                    }
+                    $upd->close();
+
+                    // 3) Commit
+                    $mysqli->commit();
+
+                    // 4) Optional security hardening:
+                    // session_regenerate_id(true);
+
+                    $success = "Your password has been updated successfully.";
+                } catch (Throwable $txe) {
+                    $mysqli->rollback();
+                    $error = "We couldn't update your password right now. Please try again.";
+                }
             }
         }
     }
@@ -213,21 +258,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_password'])) {
         </div>
 
         <div class="d-grid">
-            <button type="submit" name="update_password" class="btn btn-primary"
-                <?= !$canSend2FA ? 'disabled' : '' ?>>Update Password</button>
+            <!-- ✅ Removed the disabled attribute based on email -->
+            <button type="submit" name="update_password" class="btn btn-primary">Update Password</button>
         </div>
     </form>
 </div>
-
-<?php if (!$canSend2FA): ?>
-<script>
-Swal.fire({
-    icon: 'warning',
-    title: 'No email on file',
-    text: 'Add an email to your account so we can send the 2FA code before changing your password.'
-});
-</script>
-<?php endif; ?>
 
 <?php if (!empty($success)): ?>
 <script>Swal.fire({ icon: 'success', title: 'Success', text: <?= json_encode($success) ?> });</script>
@@ -256,10 +291,9 @@ const newInput      = document.getElementById("new_password");
 const confirmInput  = document.getElementById("confirm_password");
 const strengthMeter = document.getElementById("strength-meter");
 const submitBtn     = document.querySelector('button[name="update_password"]');
-const canSend2FA    = <?= $canSend2FA ? 'true' : 'false' ?>;
 
-// Disable button initially (and also disabled in HTML if no email)
-submitBtn.disabled = true || !canSend2FA;
+// Start with disabled until valid
+submitBtn.disabled = true;
 
 // Track changes
 [currentInput, newInput, confirmInput].forEach(input => {
@@ -271,7 +305,7 @@ function validateForm() {
     const newVal     = newInput.value;
     const confirmVal = confirmInput.value;
 
-    // Password strength check
+    // Password strength (client hint only)
     let strength = 0;
     if (newVal.length >= 8) strength++;
     if (/[a-z]/.test(newVal)) strength++;
@@ -287,15 +321,14 @@ function validateForm() {
         strengthMeter.className = "strength-meter strength-strong";
     }
 
-    // Enable only if all conditions are met AND we have an email for 2FA
-    const isStrong = strength >= 3;
+    const isStrong = strength >= 3;  // UI-level check; server has stricter regex
     const notOld   = currentVal !== newVal;
     const matches  = newVal === confirmVal;
 
-    submitBtn.disabled = !(isStrong && notOld && matches && canSend2FA);
+    submitBtn.disabled = !(isStrong && notOld && matches);
 }
 
-// Strength meter + reuse warning
+// Strength meter + reuse warning (UI hint)
 document.getElementById("new_password").addEventListener("input", function () {
     const val     = this.value;
     const current = document.getElementById("current_password").value;

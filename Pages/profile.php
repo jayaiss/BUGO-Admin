@@ -2,6 +2,7 @@
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
+
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
@@ -10,6 +11,11 @@ register_shutdown_function(function () {
         exit();
     }
 });
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../include/connection.php';
 $mysqli = db_connection();
 require_once './include/encryption.php';
@@ -25,11 +31,12 @@ $success = $error = null;
 
 // Handle profile update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-    $newEmail = $_POST['email'] ?? '';
+    $newEmail = $_POST['email'] ?? '';              // optional; blank means "remove"
     $newCivilStatus = $_POST['civil_status'] ?? '';
     $hasImage = isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK;
 
-    if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+    // Email is OPTIONAL: only validate if provided (non-empty)
+    if ($newEmail !== '' && !filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } elseif ($hasImage && !in_array($_FILES['profile_picture']['type'], ['image/jpeg', 'image/png', 'image/jpg'])) {
         $error = "Invalid image type. Only JPG and PNG are allowed.";
@@ -42,17 +49,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         $stmtID->fetch();
         $stmtID->close();
 
-        // 🔍 Fetch old data before update
+        // 🔍 Fetch old data before update (for audit)
         $trigger = new Trigger();
         $oldData = $trigger->getOldAndNewData($employee_id, 1); // 1 = employee table
 
         // 👤 Update the profile
         if ($hasImage) {
             $imageData = file_get_contents($_FILES['profile_picture']['tmp_name']);
-            $stmt = $mysqli->prepare("UPDATE employee_list SET employee_email = ?, employee_civil_status = ?, profilePicture = ? WHERE employee_username = ?");
+
+            // If employee_email allows NULL, this will clear it when input is blank:
+            $stmt = $mysqli->prepare("
+                UPDATE employee_list
+                SET
+                    employee_email = NULLIF(?, ''),    -- blank => NULL, value => value
+                    employee_civil_status = ?,
+                    profilePicture = ?
+                WHERE employee_username = ?
+            ");
+            // NOTE: If employee_email is NOT NULL in schema, use this instead:
+            // employee_email = CASE WHEN ? = '' THEN '' ELSE ? END
+            // and bind: $stmt->bind_param('sssss', $newEmail, $newCivilStatus, $imageData, $loggedInUsername);
             $stmt->bind_param("ssss", $newEmail, $newCivilStatus, $imageData, $loggedInUsername);
         } else {
-            $stmt = $mysqli->prepare("UPDATE employee_list SET employee_email = ?, employee_civil_status = ? WHERE employee_username = ?");
+            $stmt = $mysqli->prepare("
+                UPDATE employee_list
+                SET
+                    employee_email = NULLIF(?, ''),    -- blank => NULL, value => value
+                    employee_civil_status = ?
+                WHERE employee_username = ?
+            ");
+            // If NOT NULL column: use CASE WHEN ? = '' THEN '' ELSE ? END and bind twice for the email.
             $stmt->bind_param("sss", $newEmail, $newCivilStatus, $loggedInUsername);
         }
 
@@ -126,18 +152,25 @@ $employee = $result->fetch_assoc();
         </div>
 
         <div class="mb-3">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($employee['employee_email']) ?>" required>
+            <label for="email" class="form-label">Email Address (optional)</label>
+            <input
+                type="email"
+                name="email"
+                id="email"
+                class="form-control"
+                value="<?= htmlspecialchars($employee['employee_email'] ?? '') ?>"
+                placeholder="Leave blank to remove email"
+            >
         </div>
 
         <div class="mb-3">
             <label for="civil_status" class="form-label">Civil Status</label>
             <select name="civil_status" id="civil_status" class="form-select" required>
                 <option value="">-- Select --</option>
-                <option value="Single" <?= ($employee['employee_civil_status'] === 'Single') ? 'selected' : '' ?>>Single</option>
-                <option value="Married" <?= ($employee['employee_civil_status'] === 'Married') ? 'selected' : '' ?>>Married</option>
-                <option value="Widowed" <?= ($employee['employee_civil_status'] === 'Widowed') ? 'selected' : '' ?>>Widowed</option>
-                <option value="Separated" <?= ($employee['employee_civil_status'] === 'Separated') ? 'selected' : '' ?>>Separated</option>
+                <option value="Single"   <?= ($employee['employee_civil_status'] === 'Single') ? 'selected' : '' ?>>Single</option>
+                <option value="Married"  <?= ($employee['employee_civil_status'] === 'Married') ? 'selected' : '' ?>>Married</option>
+                <option value="Widowed"  <?= ($employee['employee_civil_status'] === 'Widowed') ? 'selected' : '' ?>>Widowed</option>
+                <option value="Separated"<?= ($employee['employee_civil_status'] === 'Separated') ? 'selected' : '' ?>>Separated</option>
             </select>
         </div>
 

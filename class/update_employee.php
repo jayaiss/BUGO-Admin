@@ -9,128 +9,146 @@ if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
     require_once __DIR__ . '/../security/403.html';
     exit;
 }
+
 require_once __DIR__ . '/../include/connection.php';
-$mysqli = db_connection();require_once '../include/encryption.php';
-require_once '../include/redirects.php'; 
+$mysqli = db_connection();
+require_once __DIR__ . '/../include/encryption.php';
+require_once __DIR__ . '/../include/redirects.php';
 
-// Check if form is submitted
+// Helper to read either edit_* or plain keys
+function postv($a, $b = null) {
+    if (isset($_POST[$a])) return $_POST[$a];
+    if ($b && isset($_POST[$b])) return $_POST[$b];
+    return '';
+}
+
+// Handle POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and validate input data
-    $employee_id = filter_var($_POST['employee_id'], FILTER_SANITIZE_NUMBER_INT);
-    $first_name = filter_var($_POST['first_name'], FILTER_SANITIZE_STRING);
-    $middle_name = filter_var($_POST['middle_name'], FILTER_SANITIZE_STRING);
-    $last_name = filter_var($_POST['last_name'], FILTER_SANITIZE_STRING);
-    $birth_date = filter_var($_POST['birth_date'], FILTER_SANITIZE_STRING);
-    $birth_place = filter_var($_POST['birth_place'], FILTER_SANITIZE_STRING);
-    $gender = filter_var($_POST['gender'], FILTER_SANITIZE_STRING);
-    $contact_number = filter_var($_POST['contact_number'], FILTER_SANITIZE_NUMBER_INT);
-    $civil_status = filter_var($_POST['civil_status'], FILTER_SANITIZE_STRING);
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $zone = filter_var($_POST['zone'], FILTER_SANITIZE_STRING);
-    $citizenship = filter_var($_POST['citizenship'], FILTER_SANITIZE_STRING);
-    $religion = filter_var($_POST['religion'], FILTER_SANITIZE_STRING);
-    $term = filter_var($_POST['term'], FILTER_SANITIZE_STRING);
+    // IDs
+    $employee_id = filter_var(postv('employee_id'), FILTER_SANITIZE_NUMBER_INT);
 
-    // Validate required fields
-    if (empty($first_name) || empty($last_name) || empty($birth_date) || empty($email)) {
-        echo "All required fields must be filled out.";
+    // Names
+    $first_name   = filter_var(postv('edit_first_name',  'first_name'),  FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $middle_name  = filter_var(postv('edit_middle_name', 'middle_name'), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $last_name    = filter_var(postv('edit_last_name',   'last_name'),   FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+    // Bio
+    $birth_date   = filter_var(postv('edit_birth_date',  'birth_date'),  FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $birth_place  = filter_var(postv('edit_birth_place', 'birth_place'), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $gender       = filter_var(postv('edit_gender',      'gender'),      FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $civil_status = filter_var(postv('edit_civil_status','civil_status'),FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $citizenship  = filter_var(postv('edit_citizenship', 'citizenship'), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $religion     = filter_var(postv('edit_religion',    'religion'),    FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $term         = filter_var(postv('edit_term',        'term'),        FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+    // Contact
+    $zone         = filter_var(postv('edit_zone',        'zone'),        FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email_raw    = trim(postv('edit_email',             'email'));
+    $email        = $email_raw !== '' ? filter_var($email_raw, FILTER_SANITIZE_EMAIL) : '';
+
+    // Allow +, spaces, dashes; store a cleaned numeric version (optional)
+    $contact_raw  = trim(postv('edit_contact_number', 'contact_number'));
+    $contact_disp = preg_replace('/[^0-9+\-\s]/', '', $contact_raw); // for display/storage as-is
+    $contact_num  = preg_replace('/\D+/', '', $contact_raw);         // pure digits if you prefer
+
+    // Account
+    $username     = trim(filter_var(postv('edit_username','username'), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+    $new_password = (string)postv('edit_new_password', 'new_password'); // raw for hashing
+
+    // Basic required validations
+    if (empty($employee_id) || empty($first_name) || empty($last_name) || empty($birth_date) || empty($username)) {
+        echo "<script>
+          Swal.fire({icon:'error', title:'Missing data', text:'First name, last name, birth date, and username are required.'});
+        </script>";
         exit;
     }
 
-    // Validate email format
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid email format.";
+    // Email (optional but if provided, must be valid)
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>Swal.fire({icon:'error', title:'Invalid email', text:'Please enter a valid email.'});</script>";
         exit;
     }
 
-    // Validate contact number (only digits, 10-15 characters)
-    if (!preg_match("/^\d{10,15}$/", $contact_number)) {
-        echo "Invalid contact number. It should contain only numbers and be between 10-15 digits.";
+    // Contact (optional but if provided, basic format)
+    if ($contact_disp !== '' && !preg_match('/^[0-9+\-\s]{7,20}$/', $contact_disp)) {
+        echo "<script>Swal.fire({icon:'error', title:'Invalid contact number', text:'Use 7–20 digits; +, space, and - allowed.'});</script>";
         exit;
     }
 
-    // Validate birth date format (assuming format is YYYY-MM-DD)
-    if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $birth_date)) {
-        echo "Invalid birth date format. Use YYYY-MM-DD.";
+    // Birth date (YYYY-MM-DD)
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birth_date)) {
+        echo "<script>Swal.fire({icon:'error', title:'Invalid date', text:'Use YYYY-MM-DD for birth date.'});</script>";
         exit;
     }
 
-    // Prepare SQL query to update the employee details
-    $sql = "UPDATE employee_list SET 
-                employee_fname = ?, 
-                employee_mname = ?, 
-                employee_lname = ?, 
-                employee_birth_date = ?, 
-                employee_birth_place = ?, 
-                employee_gender = ?, 
-                employee_contact_number = ?, 
-                employee_civil_status = ?, 
-                employee_email = ?, 
-                employee_zone = ?, 
-                employee_citizenship = ?, 
-                employee_religion = ?, 
-                employee_term = ? 
-            WHERE employee_id = ?";
-
-    // Prepare the query
-    if ($stmt = $mysqli->prepare($sql)) {
-        $stmt->bind_param("sssssssssssssi", 
-            $first_name, 
-            $middle_name, 
-            $last_name, 
-            $birth_date, 
-            $birth_place, 
-            $gender, 
-            $contact_number, 
-            $civil_status, 
-            $email, 
-            $zone, 
-            $citizenship, 
-            $religion, 
-            $term, 
-            $employee_id
-        );
-        
-        // Execute the query
-        if ($stmt->execute()) {
-            // If the update is successful, redirect to the 'official_info' page
-               echo "<script>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: 'Role added successfully!',
-                            confirmButtonColor: '#3085d6'
-                        }).then(() => {
-                            window.location.href = '{$redirects['officials_api']}';
-                        });
-                    </script>";
-            exit(); // Ensure the script stops after the redirect
-        } else {
-            // Handle error (in case of failure)
-                echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed!',
-                        text: 'Error: Error updating employee',
-                        confirmButtonColor: '#d33'
-                    });
-                </script>";
+    // Password change rules (only if provided)
+    $password_hash = null;
+    if ($new_password !== '') {
+        if (strlen($new_password) < 8) {
+            echo "<script>Swal.fire({icon:'error', title:'Weak password', text:'Password must be at least 8 characters.'});</script>";
+            exit;
         }
-        // Close the prepared statement
+        $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+    }
+
+    // Build dynamic UPDATE
+    $fields = [
+        'employee_fname'          => $first_name,
+        'employee_mname'          => $middle_name,
+        'employee_lname'          => $last_name,
+        'employee_birth_date'     => $birth_date,
+        'employee_birth_place'    => $birth_place,
+        'employee_gender'         => $gender,
+        'employee_contact_number' => $contact_disp, // or $contact_num if you want pure digits
+        'employee_civil_status'   => $civil_status,
+        'employee_email'          => $email,
+        'employee_zone'           => $zone,
+        'employee_citizenship'    => $citizenship,
+        'employee_religion'       => $religion,
+        'employee_term'           => $term,
+        'employee_username'       => $username,
+    ];
+    if ($password_hash !== null) {
+        $fields['employee_password'] = $password_hash;
+        // Optional: also set password_changed flag
+        // $fields['password_changed'] = 1;
+    }
+
+    // Create SQL SET clause and types
+    $setParts = [];
+    $values   = [];
+    $types    = '';
+    foreach ($fields as $col => $val) {
+        $setParts[] = "$col = ?";
+        $values[]   = $val;
+        $types     .= 's';
+    }
+    $types .= 'i'; // for WHERE id
+    $values[] = (int)$employee_id;
+
+    $sql = "UPDATE employee_list SET " . implode(', ', $setParts) . " WHERE employee_id = ?";
+
+    if ($stmt = $mysqli->prepare($sql)) {
+        $stmt->bind_param($types, ...$values);
+
+        if ($stmt->execute()) {
+            echo "<script>
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Updated',
+                  text: 'Employee details were updated successfully.',
+                  confirmButtonColor: '#3085d6'
+                }).then(() => { window.location.href = '{$redirects['officials_api']}'; });
+            </script>";
+            exit;
+        } else {
+            echo "<script>Swal.fire({icon:'error', title:'Failed', text:'Error updating employee (DB execute).'});</script>";
+        }
         $stmt->close();
     } else {
-        // If the SQL query fails to prepare
-        echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed!',
-                        text: 'Error: Error!',
-                        confirmButtonColor: '#d33'
-                    });
-                </script>";
+        echo "<script>Swal.fire({icon:'error', title:'Failed', text:'Error preparing update statement.'});</script>";
     }
 }
 
-// Close the database connection
 $mysqli->close();
 ?>

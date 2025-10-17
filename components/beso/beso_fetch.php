@@ -20,19 +20,14 @@ $trigger = new Trigger();
 // --------- Role-based base URL ---------
 $role = strtolower($_SESSION['Role_Name'] ?? '');
 switch ($role) {
-  case 'admin':
-    $baseUrl = enc_admin('beso');
-    break;
-  case 'beso':
-    $baseUrl = enc_beso('beso');
-    break;
-  default:
-    $baseUrl = 'index.php';
+  case 'admin': $baseUrl = enc_admin('beso'); break;
+  case 'beso':  $baseUrl = enc_beso('beso');  break;
+  default:      $baseUrl = 'index.php';
 }
 
 // --------- Edit handler ---------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_beso'])) {
-    $id        = intval($_POST['beso_id']);
+    $id        = (int)($_POST['beso_id'] ?? 0);
     $education = trim($_POST['education_attainment'] ?? '');
     $course    = trim($_POST['course'] ?? '');
 
@@ -40,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_beso'])) {
     if ($stmt) {
         $stmt->bind_param("ssi", $education, $course, $id);
         if ($stmt->execute()) {
-            // Log edit
+            // Log edit (old values passed from form)
             $oldData = [
                 'education_attainment' => $_POST['original_education_attainment'] ?? '',
                 'course'               => $_POST['original_course'] ?? ''
@@ -49,12 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_beso'])) {
 
             echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                   <script>
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Updated!',
-                      text: 'BESO entry updated successfully.',
-                      confirmButtonColor: '#3085d6'
-                    }).then(() => { window.location.href = '{$baseUrl}'; });
+                    Swal.fire({icon:'success',title:'Updated!',text:'BESO entry updated successfully.'})
+                        .then(()=>{ window.location.href = '{$baseUrl}';});
                   </script>";
             exit;
         } else {
@@ -66,21 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_beso'])) {
 
 // --------- Soft delete handler ---------
 if (isset($_GET['delete_id']) && is_numeric($_GET['delete_id'])) {
-    $delete_id = intval($_GET['delete_id']);
+    $delete_id = (int)$_GET['delete_id'];
     $stmt = $mysqli->prepare("UPDATE beso SET beso_delete_status = 1 WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $delete_id);
         if ($stmt->execute()) {
             $trigger->isDelete(28, $delete_id);
-
             echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                   <script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: 'Record successfully archived.',
-                        confirmButtonColor: '#3085d6'
-                    }).then(() => { window.location.href = '{$baseUrl}'; });
+                    Swal.fire({icon:'success',title:'Deleted!',text:'Record successfully archived.'})
+                        .then(()=>{ window.location.href = '{$baseUrl}';});
                   </script>";
             exit;
         } else {
@@ -90,7 +76,7 @@ if (isset($_GET['delete_id']) && is_numeric($_GET['delete_id'])) {
     }
 }
 
-// --------- Filters ---------
+// --------- Filters (adapted to BESO columns) ---------
 $search = trim($_GET['search'] ?? '');
 $month  = $_GET['month'] ?? '';
 $year   = $_GET['year'] ?? '';
@@ -101,14 +87,12 @@ $params = [];
 $types  = '';
 
 if ($search !== '') {
-    $conditions[] =
-        "(residents.first_name  LIKE CONCAT('%', ?, '%') OR
-          residents.middle_name LIKE CONCAT('%', ?, '%') OR
-          residents.last_name   LIKE CONCAT('%', ?, '%'))";
-    $params[] = $search;
-    $params[] = $search;
-    $params[] = $search;
-    $types   .= 'sss';
+    $conditions[] = "(beso.firstName  LIKE CONCAT('%', ?, '%')
+                   OR beso.middleName LIKE CONCAT('%', ?, '%')
+                   OR beso.lastName   LIKE CONCAT('%', ?, '%')
+                   OR beso.suffixName LIKE CONCAT('%', ?, '%'))";
+    $params = array_merge($params, [$search, $search, $search, $search]);
+    $types .= 'ssss';
 }
 
 if ($month !== '') {
@@ -136,46 +120,36 @@ $page             = (isset($_GET['pagenum']) && is_numeric($_GET['pagenum'])) ? 
 $results_per_page = 20;
 $offset           = ($page - 1) * $results_per_page;
 
-// --------- Count total rows ---------
-$countQuery = "
-  SELECT COUNT(*) AS total
-  FROM beso
-  INNER JOIN residents ON beso.res_id = residents.id
-  WHERE $whereClause";
-
-$countStmt = $mysqli->prepare($countQuery);
+// --------- Count total rows (no join) ---------
+$countQuery = "SELECT COUNT(*) AS total FROM beso WHERE $whereClause";
+$countStmt  = $mysqli->prepare($countQuery);
 if ($countStmt) {
-    if (!empty($params)) {
-        $countStmt->bind_param($types, ...$params);
-    }
+    if (!empty($params)) $countStmt->bind_param($types, ...$params);
     if ($countStmt->execute()) {
-        $countRes = $countStmt->get_result();
-        $total_rows  = (int)($countRes->fetch_assoc()['total'] ?? 0);
+        $res = $countStmt->get_result();
+        $total_rows  = (int)($res->fetch_assoc()['total'] ?? 0);
         $total_pages = max(1, (int)ceil($total_rows / $results_per_page));
     } else {
         error_log('SQL error (count): ' . $countStmt->error);
-        $total_rows = 0;
-        $total_pages = 1;
+        $total_rows = 0; $total_pages = 1;
     }
     $countStmt->close();
 } else {
-    $total_rows = 0;
-    $total_pages = 1;
+    $total_rows = 0; $total_pages = 1;
 }
 
-// --------- Main SELECT ---------
+// --------- Main SELECT (no join; use BESO name fields) ---------
 $query = "
   SELECT
     beso.id,
+    beso.firstName,
+    beso.middleName,
+    beso.lastName,
+    beso.suffixName,
     beso.education_attainment,
     beso.course,
-    beso.created_at,
-    residents.first_name,
-    residents.middle_name,
-    residents.last_name,
-    residents.suffix_name
+    beso.created_at
   FROM beso
-  INNER JOIN residents ON beso.res_id = residents.id
   WHERE $whereClause
   ORDER BY beso.created_at DESC
   LIMIT ? OFFSET ?";
@@ -187,15 +161,14 @@ $mainParams[] = $offset;
 
 $stmt = $mysqli->prepare($query);
 if ($stmt) {
-    if (!empty($mainParams)) {
-        $stmt->bind_param($mainTypes, ...$mainParams);
-    }
+    $stmt->bind_param($mainTypes, ...$mainParams);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
     } else {
         error_log('SQL error (main): ' . $stmt->error);
         $result = false;
     }
+    $stmt->close();
 } else {
     $result = false;
 }
@@ -205,5 +178,7 @@ $queryParams = $_GET;
 unset($queryParams['pagenum']);
 $queryString = http_build_query($queryParams);
 
-// At this point, $result, $total_pages, $page, $queryString, and $baseUrl are ready for your view.
+// $result, $total_pages, $page, $queryString, $baseUrl are ready for the view.
+// NOTE: In the table template, read the fields as:
+// $row['firstName'], $row['middleName'], $row['lastName'], $row['suffixName']
 ?>
