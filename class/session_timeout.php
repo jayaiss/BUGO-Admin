@@ -1,4 +1,7 @@
 <?php
+// class/session_timeout.php
+// AJAX-aware session timeout handler: JSON for AJAX, modal+redirect for pages.
+
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
@@ -7,21 +10,48 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+/* If you want a different timeout globally, change this. */
+$timeout_duration = 600; // 10 minutes
+
+// Create CSRF if missing (harmless here; useful for pages that include this early)
 if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Timeout duration: 10 minutes (600 seconds)
-$timeout_duration = 600; // <- if you want real 10 minutes, set this to 600
+/* Detect if the current request expects JSON.
+   - Define('AJAX_MODE', true) in your JSON endpoints (recommended)
+   - OR Accept header includes application/json
+   - OR X-Requested-With: XMLHttpRequest
+*/
+$isAjax = (defined('AJAX_MODE') && AJAX_MODE)
+  || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+  || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
-// Check if session has expired (inactivity longer than the timeout duration)
-if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout_duration) {
-    // Unset session variables and destroy the session
-    session_unset();
-    session_destroy();
+if (isset($_SESSION['last_activity']) && (time() - (int)$_SESSION['last_activity']) > $timeout_duration) {
+  // Kill session
+  $_SESSION = [];
+  if (ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+  }
+  session_unset();
+  session_destroy();
 
-    // Enhanced UI (no external libs). Shows a modal then redirects.
-    echo '
+  if ($isAjax) {
+    // Return pure JSON so fetch(...).json() won't choke on HTML
+    while (ob_get_level()) { ob_end_clean(); }
+    header('Content-Type: application/json; charset=utf-8');
+    http_response_code(440); // Login Time-out (non-standard but descriptive)
+    echo json_encode([
+      'success' => false,
+      'error'   => 'session_expired',
+      'message' => 'Your session has expired. Please log in again.'
+    ]);
+    exit;
+  }
+
+  // ---- Normal page flow: show your modal then redirect to index.php ----
+  echo '
 <!doctype html>
 <html lang="en">
 <head>
@@ -74,7 +104,6 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     <div class="card">
       <div class="row">
         <div class="icon" aria-hidden="true">
-          <!-- warning triangle -->
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path d="M12 8v5" stroke="var(--warn)" stroke-width="2" stroke-linecap="round"/>
             <circle cx="12" cy="17" r="1.2" fill="var(--warn)"/>
@@ -109,23 +138,17 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
           var remain = Math.max(0, total - elapsed);
           text.textContent = "Redirecting in " + (remain/1000).toFixed(1) + "s…";
         }
-        if (elapsed >= total) {
-          window.location.replace("index.php");
-          return;
-        }
+        if (elapsed >= total) { window.location.replace("index.php"); return; }
         requestAnimationFrame(tick);
       }
-      // small delay to ensure paint before anim
       setTimeout(tick, 30);
-      // extra failsafe: redirect at ~3s even if animations pause
-      setTimeout(function(){ window.location.replace("index.php"); }, 3000);
+      setTimeout(function(){ window.location.replace("index.php"); }, 3000); // failsafe
     })();
   </script>
 </body>
 </html>';
-    exit();
+  exit;
 }
 
-// Update last activity time to prevent session timeout
+// Still active — refresh activity timestamp
 $_SESSION['last_activity'] = time();
-?>
